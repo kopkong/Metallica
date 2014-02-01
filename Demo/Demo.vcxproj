@@ -39,6 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\Win32</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -49,12 +50,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>G:\Metallica\glew-1.10.0\include;G:\Metallica\SDL2-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\glew-1.10.0\include;..\external\SDL2-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>G:\Metallica\glew-1.10.0\Debug\GLEW.lib;G:\Metallica\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\external\glew-1.10.0\lib\Debug\Win32\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -87,14 +88,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\glew-1.10.0\GLEW.vcxproj">
-      <Project>{18559270-a6e3-4e3a-9ff6-3669fe147c19}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SDL2-2.0.1\VisualC\SDL\SDL_VS2010.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
