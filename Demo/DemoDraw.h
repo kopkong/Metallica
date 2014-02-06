@@ -1,5 +1,6 @@
 #pragma once
 #include "metallicaengine.h"
+#include "DataHelper.h"
 
 class DemoDraw :
 	public MetallicaEngine
@@ -7,5 +8,7 @@ class DemoDraw :
 public:
 	DemoDraw(void);
 	~DemoDraw(void);
+	bool InitData();
+	DataHelper *mDataMgr;
 };
 

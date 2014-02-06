@@ -11,12 +11,13 @@ public:
 	MetallicaEngine(void);
 	~MetallicaEngine(void);
 	bool Init();
+	virtual bool InitData() = 0;
 	//bool CreateGameWindow();
 	void UpdateScene();
 	void DrawScene();
 	void Run();
 	void DestoryEngine();
-	void SDLDie(const char *msg);
+	//void SDLDie(const char *msg);
 	void UserEventHandler(SDL_Event*);
 	void KeyBoardHandler();
 	void MouserHandler();

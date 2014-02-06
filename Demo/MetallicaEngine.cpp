@@ -1,4 +1,5 @@
 #include "MetallicaEngine.h"
+#include "engine.inl"
 
 MetallicaEngine::MetallicaEngine(void)
 {
@@ -17,19 +18,26 @@ MetallicaEngine::~MetallicaEngine(void)
 
 bool MetallicaEngine::Init()
 {
+	// Init Data
+	if(!InitData())
+	{
+		SDLDie("Unable to initialize Game data!");
+		return false;
+	}
+	else
+	{
+		SDL_Log("Init Game data success!");
+	}
+
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		SDLDie("Unable to initialize SDL");
 		return false;
 	}
-
-	// Initialize GLEW
-	//glewExperimental = true;
-	//if(glewInit() != GLEW_OK)
-	//{
-	//	SDLDie("Failed to initialize GLEW\n");
-	//	return false;
-	//}
+	else
+	{
+		SDL_Log("Init SDL success!");
+	}
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
@@ -99,13 +107,6 @@ void MetallicaEngine::DestoryEngine()
 	SDL_GL_DeleteContext(mMainContext);
 	SDL_DestroyWindow(mMainWindow);
 	SDL_Quit();
-}
-
-void MetallicaEngine::SDLDie(const char *msg)
-{
-    printf("%s: %s\n", msg, SDL_GetError());
-    SDL_Quit();
-    exit(1);
 }
 
 void MetallicaEngine::UserEventHandler(SDL_Event* event)

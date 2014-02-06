@@ -9,7 +9,21 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <string>
+#include <vector>
+#include "SDL.h"
 
-
-
-// TODO: reference additional headers your program requires here
+#define GENDER_MAN									1
+#define GENDER_WOMAN								2
+#define ATTACK_PROPERTIES							5
+#define ATTACK_PROPERTYINDEX_TONGLV		0
+#define ATTACK_PROPERTYINDEX_WULI			1
+#define ATTACK_PROPERTYINDEX_ZHILI			2
+#define ATTACK_PROPERTYINDEX_ZHENGZHI		3
+#define ATTACK_PROPERTYINDEX_MEILI			4
+#define MAX_CITIES										100
+#define WINDOW_WIDTH								1024
+#define WINDOW_HEIGHT								768
+#define BATTLE_MAX_HEROES						5
+#define BATTLE_SIDE_ONE								1
+#define BATTLE_SIDE_TWO							2

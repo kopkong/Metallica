@@ -1,0 +1,11 @@
+类名： 		单词首字母都大写 (Pascal Case)。 例 ResourceMangement
+类成员： 	m + Pascal Case。例: mWindowHandler
+类方法： 	Camel Case。例：createWindow
+常量：	 	全部大写， 用下划线分割不同单词. 例：WINDOW_WIDTH
+局部变量：	Camel Case。 例：adjustedBorderWidth
+
+
+
+举例： 
+Pascal Case：CreateCodeStyle
+Camel Case： createCodeStyle
