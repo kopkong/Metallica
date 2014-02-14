@@ -7,8 +7,17 @@ class DemoDraw :
 {
 public:
 	DemoDraw(void);
+	DemoDraw(int,int);
 	~DemoDraw(void);
-	bool InitData();
+	bool initData();
+	void updateScene();
+	void drawScene();
+	void drawBackGround();
+	void initProg();
+	void initTexture();
 	DataHelper *mDataMgr;
+
+	int mWindowWidth;
+	int mWindowHeight;
 };
 

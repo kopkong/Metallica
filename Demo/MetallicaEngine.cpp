@@ -13,13 +13,13 @@ MetallicaEngine::MetallicaEngine(void)
 
 MetallicaEngine::~MetallicaEngine(void)
 {
-	DestoryEngine();
+	destoryEngine();
 }
 
-bool MetallicaEngine::Init()
+bool MetallicaEngine::init()
 {
 	// Init Data
-	if(!InitData())
+	if(!initData())
 	{
 		SDLDie("Unable to initialize Game data!");
 		return false;
@@ -63,34 +63,36 @@ bool MetallicaEngine::Init()
 	return true;
 }
 
-void MetallicaEngine::UpdateScene()
+void MetallicaEngine::updateScene()
 {
 
 }
 
-void MetallicaEngine::DrawScene()
+void MetallicaEngine::drawScene()
 {
 	glClearColor(1.0,0.0,0.0,1.0);
 	SDL_GL_SwapWindow(mMainWindow);
 }
 
-void MetallicaEngine::Run()
+void MetallicaEngine::run()
 {
 	SDL_Event event;
 
 	while((!mEngineStopped) && (SDL_WaitEvent(&event)))
 	{
-		UpdateScene();
-		DrawScene();
+		updateScene();
+		drawScene();
 
 		switch(event.type)
 		{
 			case SDL_USEREVENT:
-				UserEventHandler(&event);
+				userEventHandler(&event);
 				break;
 			case SDL_KEYDOWN:
+				keyBoardHandler(&event);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
+				mouseHandler(&event);
 				break;
 			case SDL_QUIT:
 				mEngineStopped = true;
@@ -101,7 +103,7 @@ void MetallicaEngine::Run()
 	}
 }
 
-void MetallicaEngine::DestoryEngine()
+void MetallicaEngine::destoryEngine()
 {
 	// Delete OpenGL context, destory window
 	SDL_GL_DeleteContext(mMainContext);
@@ -109,10 +111,22 @@ void MetallicaEngine::DestoryEngine()
 	SDL_Quit();
 }
 
-void MetallicaEngine::UserEventHandler(SDL_Event* event)
+void MetallicaEngine::userEventHandler(SDL_Event* event)
 {
 	// Handle event in child class
 
 }
+
+void MetallicaEngine::keyBoardHandler(SDL_Event* event)
+{
+	SDL_Log("Press key %d",event->key.keysym.scancode);
+}
+
+void MetallicaEngine::mouseHandler(SDL_Event* event)
+{
+	SDL_Log("Mouse click %d",event->button.button);
+}
+
+
 
 

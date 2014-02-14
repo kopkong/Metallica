@@ -1,8 +1,6 @@
 #pragma once
-#include <stdio.h>
 
-#include "SDL.h"
-#include "GL\glew.h"
+#include "stdafx.h"
 
 class MetallicaEngine
 {
@@ -10,17 +8,17 @@ public:
 	// public function
 	MetallicaEngine(void);
 	~MetallicaEngine(void);
-	bool Init();
-	virtual bool InitData() = 0;
+	bool init();
+	virtual bool initData() = 0;
 	//bool CreateGameWindow();
-	void UpdateScene();
-	void DrawScene();
-	void Run();
-	void DestoryEngine();
+	void updateScene();
+	void drawScene();
+	void run();
+	void destoryEngine();
 	//void SDLDie(const char *msg);
-	void UserEventHandler(SDL_Event*);
-	void KeyBoardHandler();
-	void MouserHandler();
+	void userEventHandler(SDL_Event*);
+	void keyBoardHandler(SDL_Event*);
+	void mouseHandler(SDL_Event*);
 
 	// public member
 	bool mEngineStopped;

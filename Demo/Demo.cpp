@@ -44,16 +44,16 @@ void test()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	if(!demo.Init())
+	if(!demo.init())
 	{
 		SDL_Log("Engine Init failed!");
 	}
 
-	test();
+	//test();
 
-	testBattle();
+	//testBattle();
 
-	demo.Run();
+	demo.run();
 	
 	return 0;
 }

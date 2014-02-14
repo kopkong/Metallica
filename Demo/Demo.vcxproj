@@ -50,12 +50,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\external\glew-1.10.0\include;..\external\SDL2-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\glew-1.9.0\include;..\external\SDL2-2.0.1\include;..\external\DevIL-SDK-x86-1.7.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\external\glew-1.10.0\lib\Debug\Win32\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\external\glew-1.9.0\lib\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;..\external\DevIL-SDK-x86-1.7.8\lib\DevIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -1,12 +1,6 @@
 #pragma once
 
-#include <stdlib.h>
-#include <random>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include "../external/gel/stxutif.h"
+#include "stdafx.h"
 
 using namespace std;
 
@@ -172,4 +166,138 @@ inline void splitWString(wstring str,char delim,wstring* strArray,int arrayLengt
 		i++;
 
 	}
+}
+
+
+// GL help functions
+inline bool checkError(const char* Title)
+{
+	int Error;
+	if((Error = glGetError()) != GL_NO_ERROR)
+	{
+		std::string ErrorString;
+		switch(Error)
+		{
+		case GL_INVALID_ENUM:
+			ErrorString = "GL_INVALID_ENUM";
+			break;
+		case GL_INVALID_VALUE:
+			ErrorString = "GL_INVALID_VALUE";
+			break;
+		case GL_INVALID_OPERATION:
+			ErrorString = "GL_INVALID_OPERATION";
+			break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			ErrorString = "GL_INVALID_FRAMEBUFFER_OPERATION";
+			break;
+		case GL_OUT_OF_MEMORY:
+			ErrorString = "GL_OUT_OF_MEMORY";
+			break;
+		default:
+			ErrorString = "UNKNOWN";
+			break;
+		}
+		fprintf(stdout, "OpenGL Error(%s): %s\n", ErrorString.c_str(), Title);
+
+		//pFile = fopen("log.txt","w");
+		//fprintf(pFile, "OpenGL Error(%s): %s\n", ErrorString.c_str(), Title);
+		//fclose(pFile);
+	}
+	return Error == GL_NO_ERROR;
+}
+
+inline void compileShaderFromFile(const char* shader_file_path, GLuint shaderType,GLuint programID)
+{
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+	GLuint ShaderID;
+
+	switch(shaderType)
+	{
+		case GL_VERTEX_SHADER:
+			{
+				ShaderID = glCreateShader(GL_VERTEX_SHADER);
+				break;
+			}
+		case GL_GEOMETRY_SHADER:
+			{
+				ShaderID = glCreateShader(GL_GEOMETRY_SHADER);
+				break;
+			}
+		case GL_FRAGMENT_SHADER:
+			{
+				ShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+				break;
+			}
+	}
+
+	// Read the Shader code from the file
+	std::string ShaderCode;
+	std::ifstream ShaderStream(shader_file_path, std::ios::in);
+	if(ShaderStream.is_open()){
+		std::string Line = "";
+		while(getline(ShaderStream, Line))
+			ShaderCode += "\n" + Line;
+		ShaderStream.close();
+	}
+
+	//  Compile Shader
+	printf("Compiling shader : %s\n", shader_file_path);
+	char const * SourcePointer = ShaderCode.c_str();
+	glShaderSource(ShaderID, 1, &SourcePointer , NULL);
+	glCompileShader(ShaderID);
+
+	// Check  Shader
+	glGetShaderiv(ShaderID, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(ShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	std::vector<char> ShaderErrorMessage(InfoLogLength);
+	glGetShaderInfoLog(ShaderID, InfoLogLength, NULL, &ShaderErrorMessage[0]);
+	fprintf(stdout, "%s\n", &ShaderErrorMessage[0]);
+
+	// Link the program
+	fprintf(stdout, "Linking program\n");
+	glAttachShader(programID, ShaderID);
+	glLinkProgram(programID);
+
+	// Check the program
+	glGetProgramiv(programID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	std::vector<char> ProgramErrorMessage( max(InfoLogLength, int(1)) );
+	glGetProgramInfoLog(programID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+	fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+
+	glDeleteShader(ShaderID);
+
+}
+
+inline bool loadTexture2D(const wchar_t* file_name,GLuint textureID)
+{
+	ILuint m_imageID = 0;
+	ILboolean success(0);
+	//GLuint textureID;
+	ilInit();
+	ilGenImages(1,&m_imageID);
+
+	ilBindImage(m_imageID);
+	//ilEnable(IL_ORIGIN_SET);
+	//ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+
+	success = ilLoadImage(file_name);
+
+	if(!success)
+	{
+		//load fail
+		ilDeleteImages(1,&m_imageID);
+		return false;
+	}
+
+	printf("Load texture success \n");
+
+	ilConvertImage(IL_RGBA,IL_UNSIGNED_BYTE);
+
+	//glGenTextures(1,&textureID);
+	glBindTexture(GL_TEXTURE_2D,textureID);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT),0,GL_RGBA,GL_UNSIGNED_BYTE,ilGetData());
+
+	return true;
 }
