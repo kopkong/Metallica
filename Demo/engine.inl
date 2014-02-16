@@ -1,10 +1,32 @@
 #pragma once
 
 #include "stdafx.h"
+#include "IL/ilu.h"
 
 using namespace std;
 
 static int seed = 0;
+
+struct vertex_v2fv2f
+{
+	glm::vec2 Position;
+	glm::vec2 Texcoord;
+};
+
+struct vertex_v3fv2f
+{
+	vertex_v3fv2f
+	(
+		glm::vec3 const & Position,
+		glm::vec2 const & Texcoord
+	) :
+		Position(Position),
+		Texcoord(Texcoord)
+	{}
+
+	glm::vec3 Position;
+	glm::vec2 Texcoord;
+};
 
 inline int convertStrToInt(string str)
 {
@@ -168,7 +190,6 @@ inline void splitWString(wstring str,char delim,wstring* strArray,int arrayLengt
 	}
 }
 
-
 // GL help functions
 inline bool checkError(const char* Title)
 {
@@ -275,17 +296,18 @@ inline bool loadTexture2D(const wchar_t* file_name,GLuint textureID)
 	ILuint m_imageID = 0;
 	ILboolean success(0);
 	//GLuint textureID;
-	ilInit();
-	ilGenImages(1,&m_imageID);
 
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilGenImages(1,&m_imageID);
 	ilBindImage(m_imageID);
-	//ilEnable(IL_ORIGIN_SET);
-	//ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
 	success = ilLoadImage(file_name);
 
 	if(!success)
 	{
+		ILenum errorCode = ilGetError();
+		wprintf(iluErrorString(errorCode));
 		//load fail
 		ilDeleteImages(1,&m_imageID);
 		return false;
@@ -295,7 +317,6 @@ inline bool loadTexture2D(const wchar_t* file_name,GLuint textureID)
 
 	ilConvertImage(IL_RGBA,IL_UNSIGNED_BYTE);
 
-	//glGenTextures(1,&textureID);
 	glBindTexture(GL_TEXTURE_2D,textureID);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT),0,GL_RGBA,GL_UNSIGNED_BYTE,ilGetData());
 

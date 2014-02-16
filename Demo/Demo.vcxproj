@@ -50,12 +50,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\external\glew-1.9.0\include;..\external\SDL2-2.0.1\include;..\external\DevIL-SDK-x86-1.7.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\glew-1.9.0\include;..\external\SDL2-2.0.1\include;..\external\DevIL-SDK-x86-1.7.8\include;..\external\glm-0.9.1\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\external\glew-1.9.0\lib\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;..\external\DevIL-SDK-x86-1.7.8\lib\DevIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\external\glew-1.9.0\lib\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\DevIL.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\ILU.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,32 +78,32 @@
     <ClInclude Include="..\external\gel\stxutif.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="BattleUnit.h" />
-    <ClInclude Include="City.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="DataHelper.h" />
     <ClInclude Include="DemoDraw.h" />
     <ClInclude Include="HeroCard.h" />
     <ClInclude Include="MetallicaEngine.h" />
-    <ClInclude Include="Role.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TerrainRender.h" />
+    <ClInclude Include="view_control.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\gel\gel.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="BattleUnit.cpp" />
-    <ClCompile Include="City.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="DataHelper.cpp" />
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="DemoDraw.cpp" />
     <ClCompile Include="HeroCard.cpp" />
     <ClCompile Include="MetallicaEngine.cpp" />
-    <ClCompile Include="Role.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="TerrainRender.cpp" />
+    <ClCompile Include="view_control.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data\shader\terrain_fs.glsl" />
+    <None Include="..\data\shader\terrain_vs.glsl" />
     <None Include="engine.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

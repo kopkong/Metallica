@@ -20,7 +20,7 @@ BattleScene::~BattleScene(void)
 {
 }
 
-bool BattleScene::createBattleSide(int membersOne,int membersTwo,wstring nameOne,wstring nameTwo,
+bool BattleScene::createBattleSide(unsigned int membersOne,unsigned int membersTwo,wstring nameOne,wstring nameTwo,
 	vector<HeroCard*> sideOneHeroes,vector <HeroCard*> sideTwoHeroes)
 {
 	if(membersOne > BATTLE_MAX_HEROES || membersTwo > BATTLE_MAX_HEROES)

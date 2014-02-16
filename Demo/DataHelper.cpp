@@ -3,22 +3,9 @@
 
 const char delim = ',';
 
-DataHelper::DataHelper(void)
-{
-}
-
-
-DataHelper::~DataHelper(void)
-{
-}
-
 bool DataHelper::initAll()
 {
 	loadHeroCards();
-
-	loadRoleInfo();
-
-	loadCities();
 
 	return true;
 }
@@ -60,19 +47,21 @@ bool DataHelper::loadHeroCards()
 			int n4 = convertWStrToInt(items[5]);	// 智力
 			int n5 = convertWStrToInt(items[6]);	// 政治
 			int n6 = convertWStrToInt(items[7]);	// 魅力
-			int img = convertWStrToInt(items[8]);	// Face Image
+			string img(items[8].begin(),items[8].end());	// Face Image
 			string str3(items[9].begin(),items[9].end());	// logName
 
 			HeroCard card;//(str1,str2,n1,n2,n3,n4,n5,n6);
-			card.mName = str1;
-			card.mCourtesyName = str2;
-			card.mBornYear = n1;
-			card.mTongLv = n2;
-			card.mWuLi = n3;
-			card.mZhiLi = n4;
-			card.mZhengZhi = n5;
-			card.mMeili = n6;
-			card.mLogName = str3;
+			//card.mName = str1;
+			//card.mCourtesyName = str2;
+			//card.mBornYear = n1;
+			//card.mTongLv = n2;
+			//card.mWuLi = n3;
+			//card.mZhiLi = n4;
+			//card.mZhengZhi = n5;
+			//card.mMeili = n6;
+			//card.imgID = img+".jpg";
+			//card.mLogName = str3;
+			
 
 			mHeroCards.push_back(card);
 
@@ -84,15 +73,3 @@ bool DataHelper::loadHeroCards()
 	return true;
 }
 
-bool DataHelper::loadRoleInfo()
-{
-
-	return true;
-
-}
-
-bool DataHelper::loadCities()
-{
-	return true;
-
-}

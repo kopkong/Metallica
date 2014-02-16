@@ -1,5 +1,4 @@
 #include "MetallicaEngine.h"
-#include "engine.inl"
 
 MetallicaEngine::MetallicaEngine(void)
 {
@@ -39,39 +38,44 @@ bool MetallicaEngine::init()
 		SDL_Log("Init SDL success!");
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
+	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,2);
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
+	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
 
-	mMainWindow = SDL_CreateWindow(mWindowTitleName,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
+	mSDLMainWindow = SDL_CreateWindow(mWindowTitleName,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
 		mWindowWidth,mWindowHeight,SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
-	if(!mMainWindow)
+	if(!mSDLMainWindow)
 	{
 		SDLDie("Unable to create Window!");
 		return false;
 	}
 
-	mMainContext = SDL_GL_CreateContext(mMainWindow);
+	mSDLMainContext = SDL_GL_CreateContext(mSDLMainWindow);
+	//checkError("Create GL context");
+
+	// init glew
+	if(GLEW_OK != glewInit())
+	{
+		SDLDie("Glew init failed!");
+		return false;
+	}
+
+	checkError("Init GLEW");
+
+	// init engine
+	if(!initEngine())
+	{
+		SDLDie("Unable to init engine!");
+		return false;
+	}
 
 	SDL_GL_SetSwapInterval(1);
-
-	glClear(GL_COLOR_BUFFER_BIT);
+	checkError("Init Engine");
 
 	return true;
-}
-
-void MetallicaEngine::updateScene()
-{
-
-}
-
-void MetallicaEngine::drawScene()
-{
-	glClearColor(1.0,0.0,0.0,1.0);
-	SDL_GL_SwapWindow(mMainWindow);
 }
 
 void MetallicaEngine::run()
@@ -106,8 +110,8 @@ void MetallicaEngine::run()
 void MetallicaEngine::destoryEngine()
 {
 	// Delete OpenGL context, destory window
-	SDL_GL_DeleteContext(mMainContext);
-	SDL_DestroyWindow(mMainWindow);
+	SDL_GL_DeleteContext(mSDLMainContext);
+	SDL_DestroyWindow(mSDLMainWindow);
 	SDL_Quit();
 }
 

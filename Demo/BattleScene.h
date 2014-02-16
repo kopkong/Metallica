@@ -25,7 +25,7 @@ public:
 	// attackIndex beat attackedIndex
 	void battleAttack(int sider,int attackIndex, int beAttackedIndex);
 	void resetBattle();
-	bool createBattleSide(int sideOneMembers,int sideTwoMembers,wstring,wstring,vector<HeroCard*> sideOneHeroes,vector <HeroCard*> sideTwoHeroes);
+	bool createBattleSide(unsigned int sideOneMembers,unsigned int sideTwoMembers,wstring,wstring,vector<HeroCard*> sideOneHeroes,vector <HeroCard*> sideTwoHeroes);
 	void defeated(int sider);
 	void destoryBattleScene();
 	void autoAttack();

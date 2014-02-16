@@ -18,9 +18,10 @@
 #include "GL\glew.h"
 #include "IL\il.h"
 #include "../external/gel/stxutif.h"
+#include "glm.hpp"
+#include "engine.inl"
 
 // Define Constant 
-
 
 #define GENDER_MAN									1
 #define GENDER_WOMAN								2
@@ -36,3 +37,4 @@
 #define BATTLE_MAX_HEROES							5
 #define BATTLE_SIDE_ONE								1
 #define BATTLE_SIDE_TWO								2
+

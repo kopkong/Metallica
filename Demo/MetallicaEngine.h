@@ -10,9 +10,10 @@ public:
 	~MetallicaEngine(void);
 	bool init();
 	virtual bool initData() = 0;
+	virtual bool initEngine() = 0;
 	//bool CreateGameWindow();
-	void updateScene();
-	void drawScene();
+	virtual void updateScene() = 0;
+	virtual void drawScene() = 0;
 	void run();
 	void destoryEngine();
 	//void SDLDie(const char *msg);
@@ -27,7 +28,7 @@ public:
 	int mWindowWidth;
 	int mWindowHeight;
 
-	SDL_Window *mMainWindow;
-	SDL_GLContext mMainContext;
+	SDL_Window *mSDLMainWindow;
+	SDL_GLContext mSDLMainContext;
 };
 

@@ -8,7 +8,7 @@
 #include "BattleScene.h"
 #include <iostream>
 
-DemoDraw demo;
+DemoDraw demo(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 void testBattle()
 {
