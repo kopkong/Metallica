@@ -20,9 +20,12 @@ public:
 
 	glm::mat4 getMVP();
 
-    bool onKeyboard(int Key);
+    bool onKeyboard(SDL_Keycode Key);
 
-    void onMouse(int x, int y);
+	void onMouseDown(SDL_MouseButtonEvent button);
+	void onMouseUp(SDL_MouseButtonEvent button);
+
+	void onMouseMotion(SDL_MouseMotionEvent motion);
 
     void onRender();
 
@@ -61,7 +64,7 @@ private:
     bool m_OnLeftEdge;
     bool m_OnRightEdge;
 
-    glm::ivec2 m_mousePos;
+    glm::ivec2 mMousePos;
 };
 
 #endif	/* CAMERA_H */

@@ -59,8 +59,8 @@ void Camera::init()
     m_OnLowerEdge = false;
     m_OnLeftEdge  = false;
     m_OnRightEdge = false;
-    m_mousePos.x  = mWindowWidth / 2;
-    m_mousePos.y  = mWindowHeight / 2;
+    //m_mousePos.x  = mWindowWidth / 2;
+    //m_mousePos.y  = mWindowHeight / 2;
 
     //glutWarpPointer(m_mousePos.x, m_mousePos.y);
 }
@@ -77,7 +77,7 @@ void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const gl
     init();
 }
 
-bool Camera::onKeyboard(int Key)
+bool Camera::onKeyboard(SDL_Keycode Key)
 {
     bool Ret = false;
 
@@ -121,46 +121,67 @@ bool Camera::onKeyboard(int Key)
     return Ret;
 }
 
-void Camera::onMouse(int x, int y)
+void Camera::onMouseDown(SDL_MouseButtonEvent button)
 {
-    const int DeltaX = x - m_mousePos.x;
-    const int DeltaY = y - m_mousePos.y;
+	mMousePos.x = button.x;
+	mMousePos.y = button.y;
+}
 
-    m_mousePos.x = x;
-    m_mousePos.y = y;
+void Camera::onMouseUp(SDL_MouseButtonEvent button)
+{
+	mMousePos = glm::ivec2(0,0);
+}
 
-    m_AngleH += (float)DeltaX / 20.0f;
-    m_AngleV += (float)DeltaY / 20.0f;
+void Camera::onMouseMotion(SDL_MouseMotionEvent motion)
+{
+	//if(motion.state == SDL_PRESSED)
+	if(mMousePos.x + mMousePos.y > 0)
+	{
+		SDL_Log("motion.x = %d",motion.x);
+		SDL_Log("motion.y = %d",motion.y);
 
-    if (DeltaX == 0) {
-        if (x <= MARGIN) {
-        //    m_AngleH -= 1.0f;
-            m_OnLeftEdge = true;
-        }
-        else if (x >= (mWindowWidth - MARGIN)) {
-        //    m_AngleH += 1.0f;
-            m_OnRightEdge = true;
-        }
-    }
-    else {
-        m_OnLeftEdge = false;
-        m_OnRightEdge = false;
-    }
+		int x = motion.x;
+		int y = motion.y;
 
-    if (DeltaY == 0) {
-        if (y <= MARGIN) {
-            m_OnUpperEdge = true;
-        }
-        else if (y >= (mWindowHeight - MARGIN)) {
-            m_OnLowerEdge = true;
-        }
-    }
-    else {
-        m_OnUpperEdge = false;
-        m_OnLowerEdge = false;
-    }
+		const int DeltaX = x - mMousePos.x;
+		const int DeltaY = y - mMousePos.y;
 
-    update();
+		m_AngleH += (float)DeltaX / 20.0f;
+		m_AngleV += (float)DeltaY / 20.0f;
+
+		if (DeltaX == 0) {
+			if (x <= MARGIN) {
+			//    m_AngleH -= 1.0f;
+				m_OnLeftEdge = true;
+			}
+			else if (x >= (mWindowWidth - MARGIN)) {
+			//    m_AngleH += 1.0f;
+				m_OnRightEdge = true;
+			}
+		}
+		else {
+			m_OnLeftEdge = false;
+			m_OnRightEdge = false;
+		}
+
+		if (DeltaY == 0) {
+			if (y <= MARGIN) {
+				m_OnUpperEdge = true;
+			}
+			else if (y >= (mWindowHeight - MARGIN)) {
+				m_OnLowerEdge = true;
+			}
+		}
+		else {
+			m_OnUpperEdge = false;
+			m_OnLowerEdge = false;
+		}
+
+		mMousePos.x = x;
+		mMousePos.y = y;
+
+		update();
+	}
 }
 
 void Camera::onRender()

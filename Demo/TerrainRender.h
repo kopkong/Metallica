@@ -17,11 +17,16 @@ public:
 	bool mInitOK;
 	void exit();
 
+	void keyBoardHandler(SDL_Event*);
+	Camera *mCamera;
 private:
 	GLuint mProgName;
-	Camera *mCamera;
+	
+
 	GLuint mUniformTerrainSampler;
 	GLuint mUniformHeightMap;
+	GLuint mUniformMVP;
+	
 	GLuint mTerrainTexture;
 	GLuint mHeightMap;
 	GLuint mVertexBuffer;
@@ -31,8 +36,18 @@ private:
 	int mVertexDataSize;
 	int mElementCount;
 	int mVertexElementDataSize;
-
+	
 
 	void initializeTerrain();
+	void initializeCamera();
+	
+
+	// For test
+	GLuint mTestVertexBuffer;
+	GLuint mTestColorBuffer;
+	GLuint mTestProgram;
+	GLuint mTestUniformMVP;
+	void initializeTest();
+	void renderTest();
 };
 

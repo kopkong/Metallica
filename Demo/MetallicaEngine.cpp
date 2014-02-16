@@ -84,9 +84,6 @@ void MetallicaEngine::run()
 
 	while((!mEngineStopped) && (SDL_WaitEvent(&event)))
 	{
-		updateScene();
-		drawScene();
-
 		switch(event.type)
 		{
 			case SDL_USEREVENT:
@@ -102,6 +99,8 @@ void MetallicaEngine::run()
 				mEngineStopped = true;
 				break;
 			default:
+				updateScene();
+				drawScene();
 				break;
 		}
 	}

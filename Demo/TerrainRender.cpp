@@ -1,4 +1,5 @@
 #include "TerrainRender.h"
+#include "gtc/matrix_transform.hpp"
 
 const char* TERRAIN_RESOURCES_DIR = "../data/terrain/";
 char* SHADER_DIR = "../data/shader/";
@@ -17,13 +18,15 @@ TerrainRender::~TerrainRender(void)
 
 void TerrainRender::init()
 {
-	initializeTerrain();
+	/*initializeTerrain();
+	initializeCamera();
 
 	mProgName = glCreateProgram();
 	compileShaderFromFile("../data/shader/terrain_vs.glsl",GL_VERTEX_SHADER,mProgName);
 	compileShaderFromFile("../data/shader/terrain_fs.glsl",GL_FRAGMENT_SHADER,mProgName);
 
 	mUniformTerrainSampler = glGetUniformLocation(mProgName,"gSampler");
+	mUniformMVP = glGetUniformLocation(mProgName,"MVP");
 
 	glGenTextures(1,&mTerrainTexture);
 	if(!loadTexture2D(L"../data/terrain/green.bmp",mTerrainTexture))
@@ -41,7 +44,9 @@ void TerrainRender::init()
 	glGenBuffers(1,&mElementBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,mVertexElementDataSize,mVertexElementData,GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);*/
+
+	initializeTest();
 
 	checkError("After Init");
 }
@@ -49,24 +54,32 @@ void TerrainRender::init()
 void TerrainRender::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(mProgName);
+	//glUseProgram(mProgName);
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),0);
+	//glEnableVertexAttribArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
+	//glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),0);
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),(const void*)sizeof(glm::vec2));
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),(const void*)sizeof(glm::vec2));
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,mTerrainTexture);
-	glUniform1i(mUniformTerrainSampler,0);
+	//// Bind Terrain texture
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D,mTerrainTexture);
+	//glUniform1i(mUniformTerrainSampler,0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
-	glDrawElements(GL_TRIANGLES,mElementCount,GL_UNSIGNED_INT,0);
+	//// Set MVP
+	//glm::mat4 mvp = mCamera->getMVP();
+	//glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
+	//glDrawElements(GL_TRIANGLES,mElementCount,GL_UNSIGNED_INT,0);
+
+	//glDisableVertexAttribArray(0);
+	//glDisableVertexAttribArray(1);
+
+	renderTest();
 
 	checkError("Terrain Render");
 }
@@ -74,6 +87,7 @@ void TerrainRender::render()
 void TerrainRender::exit()
 {
 	glDeleteBuffers(1,&mVertexBuffer);
+	glDeleteBuffers(1,&mElementBuffer);
 	glDeleteProgram(mProgName);
 }
 
@@ -141,4 +155,101 @@ void TerrainRender::initializeTerrain()
 	mVertexElementDataSize = sizeof(mVertexElementData);
 	mElementCount =  mVertexElementDataSize/sizeof(unsigned int) ;
 
+}
+
+void TerrainRender::initializeCamera()
+{
+	glm::vec3 targetPos = glm::vec3(
+		(MAP_X*MAP_SCALE) /2.0f,
+		150.f,
+		(MAP_Z * MAP_SCALE) / 2.0f
+	);
+
+	glm::vec3 cameraPos = glm::vec3(
+		targetPos.x + 0.8 * 400,
+		targetPos.y + 200.0,
+		-(targetPos.z + 0.5 * 400)
+		);
+
+	glm::vec3 up = glm::vec3(0.0,-1.0,0.0);
+
+	mCamera->resetCamera(cameraPos,targetPos,up);
+
+}
+
+void TerrainRender::initializeTest()
+{
+	//initializeTerrain();
+
+	mTestProgram = glCreateProgram();
+	compileShaderFromFile("../data/shader/test.vertexshader",GL_VERTEX_SHADER,mTestProgram);
+	compileShaderFromFile("../data/shader/test.fragmentshader",GL_FRAGMENT_SHADER,mTestProgram);
+
+	// Get a handle for our "MVP" uniform
+	mTestUniformMVP = glGetUniformLocation(mTestProgram, "MVP");
+
+	mCamera->resetCamera(glm::vec3(4,3,-3),glm::vec3(0,0,0),glm::vec3(0,1,0));
+
+	static const GLfloat g_vertex_buffer_data[] = { 
+		0.0f,1.0f,0.0f,
+		1.0f,1.0f,0.0f,
+		1.0f,1.0f, 1.0f
+	};
+
+	static const GLfloat g_color_buffer_data[] = { 
+		0.583f,  0.771f,  0.014f,
+		0.609f,  0.115f,  0.436f,
+		0.327f,  0.483f,  0.844f,
+	};
+
+	//GLuint vertexbuffer;
+	glGenBuffers(1, &mTestVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mTestVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+	//GLuint colorbuffer;
+	glGenBuffers(1, &mTestColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mTestColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+}
+
+void TerrainRender::renderTest()
+{
+	// Use our shader
+	glUseProgram(mTestProgram);
+
+	// Send our transformation to the currently bound shader, 
+	// in the "MVP" uniform
+	glm::mat4 MVP = mCamera->getMVP();
+	glUniformMatrix4fv(mTestUniformMVP, 1, GL_FALSE, &MVP[0][0]);
+
+	// 1rst attribute buffer : vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, mTestVertexBuffer);
+	glVertexAttribPointer(
+		0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+
+	// 2nd attribute buffer : colors
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, mTestColorBuffer);
+	glVertexAttribPointer(
+		1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+
+	// Draw the triangle !
+	glDrawArrays(GL_TRIANGLES, 0, 3); // 12*3 indices starting at 0 -> 12 triangles
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }
