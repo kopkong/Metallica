@@ -4,7 +4,7 @@
 
 #define MAP_X	3				         // size of map along x-axis
 #define MAP_Z	3				         // size of map along z-axis
-#define MAP_SCALE	200.0f		         // the scale of the terrain map
+#define MAP_SCALE	50.0f		         // the scale of the terrain map
 
 class TerrainRender
 {
@@ -21,8 +21,6 @@ public:
 	Camera *mCamera;
 private:
 	GLuint mProgName;
-	
-
 	GLuint mUniformTerrainSampler;
 	GLuint mUniformHeightMap;
 	GLuint mUniformMVP;
@@ -41,7 +39,6 @@ private:
 	void initializeTerrain();
 	void initializeCamera();
 	
-
 	// For test
 	GLuint mTestVertexBuffer;
 	GLuint mTestColorBuffer;

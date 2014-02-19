@@ -23,9 +23,6 @@
     <ClInclude Include="DemoDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MetallicaEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BattleUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,9 +41,6 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="view_control.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -56,9 +50,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DemoDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MetallicaEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BattleUnit.cpp">
@@ -77,9 +68,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="view_control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TerrainRender.cpp">

@@ -18,7 +18,7 @@ TerrainRender::~TerrainRender(void)
 
 void TerrainRender::init()
 {
-	/*initializeTerrain();
+	initializeTerrain();
 	initializeCamera();
 
 	mProgName = glCreateProgram();
@@ -44,9 +44,9 @@ void TerrainRender::init()
 	glGenBuffers(1,&mElementBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,mVertexElementDataSize,mVertexElementData,GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);*/
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 
-	initializeTest();
+	//initializeTest();
 
 	checkError("After Init");
 }
@@ -54,32 +54,32 @@ void TerrainRender::init()
 void TerrainRender::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	//glUseProgram(mProgName);
+	glUseProgram(mProgName);
 
-	//glEnableVertexAttribArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
-	//glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
+	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),0);
 
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),(const void*)sizeof(glm::vec2));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v2fv2f),(const void*)sizeof(glm::vec2));
 
-	//// Bind Terrain texture
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D,mTerrainTexture);
-	//glUniform1i(mUniformTerrainSampler,0);
+	// Bind Terrain texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,mTerrainTexture);
+	glUniform1i(mUniformTerrainSampler,0);
 
-	//// Set MVP
-	//glm::mat4 mvp = mCamera->getMVP();
-	//glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
+	// Set MVP
+	glm::mat4 mvp = mCamera->getMVP();
+	glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
 
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
-	//glDrawElements(GL_TRIANGLES,mElementCount,GL_UNSIGNED_INT,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
+	glDrawElements(GL_TRIANGLES,mElementCount,GL_UNSIGNED_INT,0);
 
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 
-	renderTest();
+	//renderTest();
 
 	checkError("Terrain Render");
 }
@@ -160,18 +160,14 @@ void TerrainRender::initializeTerrain()
 void TerrainRender::initializeCamera()
 {
 	glm::vec3 targetPos = glm::vec3(
-		(MAP_X*MAP_SCALE) /2.0f,
-		150.f,
-		(MAP_Z * MAP_SCALE) / 2.0f
+		50,0,50
 	);
 
 	glm::vec3 cameraPos = glm::vec3(
-		targetPos.x + 0.8 * 400,
-		targetPos.y + 200.0,
-		-(targetPos.z + 0.5 * 400)
+		150,100,150
 		);
 
-	glm::vec3 up = glm::vec3(0.0,-1.0,0.0);
+	glm::vec3 up = glm::vec3(0.0,1.0,0.0);
 
 	mCamera->resetCamera(cameraPos,targetPos,up);
 

@@ -68,6 +68,8 @@ bool DemoDraw::init()
 
 	SDL_GL_SetSwapInterval(1);
 	checkError("Init Engine");
+
+	return true;
 }
 
 bool DemoDraw::initData()

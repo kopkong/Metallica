@@ -1,5 +1,4 @@
 #pragma once
-#include "metallicaengine.h"
 #include "DataHelper.h"
 #include "TerrainRender.h"
 #include "camera.h"
