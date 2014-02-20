@@ -50,12 +50,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\external\glew-1.9.0\include;..\external\SDL2-2.0.1\include;..\external\DevIL-SDK-x86-1.7.8\include;..\external\glm-0.9.1\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\glew-1.9.0\include;..\external\SDL2-2.0.1\include;..\external\DevIL-SDK-x86-1.7.8\include;..\external\glm-0.9.1\glm\;..\external\assimp--3.0.1270-sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\external\glew-1.9.0\lib\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\DevIL.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\ILU.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\external\glew-1.9.0\lib\glew32d.lib;..\external\SDL2-2.0.1\VisualC\SDL\Win32\Debug\SDL2.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\DevIL.lib;..\external\DevIL-SDK-x86-1.7.8\lib\Unicode\ILU.lib;..\external\assimp--3.0.1270-sdk\lib\assimp_debug-dll_win32\assimp.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,6 +76,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\external\gel\stxutif.h" />
+    <ClInclude Include="assertLoader.h" />
     <ClInclude Include="BattleScene.h" />
     <ClInclude Include="BattleUnit.h" />
     <ClInclude Include="camera.h" />
@@ -88,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\gel\gel.cpp" />
+    <ClCompile Include="assertLoader.cpp" />
     <ClCompile Include="BattleScene.cpp" />
     <ClCompile Include="BattleUnit.cpp" />
     <ClCompile Include="camera.cpp" />

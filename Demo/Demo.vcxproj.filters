@@ -44,6 +44,9 @@
     <ClInclude Include="TerrainRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="assertLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Demo.cpp">
@@ -71,6 +74,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TerrainRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="assertLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

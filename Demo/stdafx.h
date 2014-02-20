@@ -10,16 +10,10 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <string>
-#include <random>
 #include <vector>
-#include <fstream>
-#include <sstream>
 #include "SDL.h"
 #include "GL\glew.h"
-#include "IL\il.h"
-#include "../external/gel/stxutif.h"
 #include "glm.hpp"
-#include "engine.inl"
 
 // Define Constant 
 

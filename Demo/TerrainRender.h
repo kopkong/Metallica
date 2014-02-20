@@ -1,6 +1,7 @@
 #pragma once
 #include "StdAfx.h"
 #include "camera.h"
+#include "engine.inl"
 
 #define MAP_X	32				         // size of map along x-axis
 #define MAP_Z	32				         // size of map along z-axis

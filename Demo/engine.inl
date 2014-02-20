@@ -1,7 +1,12 @@
 #pragma once
 
 #include "stdafx.h"
+#include "IL\il.h"
 #include "IL/ilu.h"
+#include <random>
+#include "../external/gel/stxutif.h"
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -42,6 +47,13 @@ inline int convertWStrToInt(wstring str)
 	char* ch = (char*)malloc(len*sizeof(char));
 	wcstombs_s(&converted, ch, len, wc, _TRUNCATE);
 	return atoi(ch);
+}
+
+inline void getWC(const char *c,wchar_t* wc)
+{
+	size_t returnValue;
+	size_t len = strlen(c) + 1;
+    mbstowcs_s(&returnValue,wc,len,c,_TRUNCATE);
 }
 
 inline float random()

@@ -97,7 +97,7 @@ void TerrainRender::exit()
 
 void TerrainRender::initializeTerrain()
 {	
-	/* Generate element array */
+	/* Generate vertex array */
 	 
 	int slimMap_Z = MAP_Z - 1;
 	int slimMap_X = MAP_X - 1;
@@ -114,8 +114,8 @@ void TerrainRender::initializeTerrain()
 			// Draw order
 			//
 			//  v3---------v4
-			//   |				 |
-			//   |				 |
+			//   |          |
+			//   |          |
 			//  v1---------v2
 			//  first triangle = v1,v2,v3  
 			//  second triangle = v3,v4,v2
@@ -148,9 +148,6 @@ void TerrainRender::initializeTerrain()
 	}
 
 	mVertexDataSize = sizeof(mVertexData);
-	//mVertexElementDataSize = sizeof(mVertexElementData);
-	//mElementCount =  mVertexElementDataSize/sizeof(unsigned int) ;
-
 }
 
 void TerrainRender::initializeCamera()
@@ -162,9 +159,9 @@ void TerrainRender::initializeCamera()
 	);
 
 	glm::vec3 cameraPos = glm::vec3(
-		MAP_X * MAP_SCALE ,
-		256 * 1.5 ,
-		MAP_Z * MAP_SCALE 
+		MAP_X * MAP_SCALE + 100 ,
+		256 * 1.5,
+		MAP_Z * MAP_SCALE + 100
 		);
 
 	glm::vec3 up = glm::vec3(0.0,1.0,0.0);
