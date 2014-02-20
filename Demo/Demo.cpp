@@ -49,10 +49,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		SDL_Log("Engine Init failed!");
 	}
 
-	//test();
-
-	//testBattle();
-
 	demo.run();
 	
 	return 0;

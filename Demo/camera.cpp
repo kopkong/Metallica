@@ -137,8 +137,8 @@ void Camera::onMouseMotion(SDL_MouseMotionEvent motion)
 	//if(motion.state == SDL_PRESSED)
 	if(mMousePos.x + mMousePos.y > 0)
 	{
-		SDL_Log("motion.x = %d",motion.x);
-		SDL_Log("motion.y = %d",motion.y);
+		//SDL_Log("motion.x = %d",motion.x);
+		//SDL_Log("motion.y = %d",motion.y);
 
 		int x = motion.x;
 		int y = motion.y;
@@ -239,7 +239,7 @@ void Camera::update()
 glm::mat4 Camera::getMVP()
 {
 	// Projection matrix : 45?Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 500.0f);
+	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 
 	// Camera matrix
 	glm::mat4 View       = glm::lookAt(

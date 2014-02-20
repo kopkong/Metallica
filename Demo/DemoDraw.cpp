@@ -102,35 +102,37 @@ void DemoDraw::drawBackGround()
 
 void DemoDraw::run()
 {
-	SDL_Event event;
-
-	while((!mEngineStopped) && (SDL_WaitEvent(&event)))
+	while((!mEngineStopped))
 	{
-		switch(event.type)
+		SDL_Event event;
+		while(SDL_PollEvent(&event))
 		{
-			case SDL_USEREVENT:
-				userEventHandler(&event);
-				break;
-			case SDL_KEYDOWN:
-				keyBoardHandler(&event);
-				break;
-			case SDL_MOUSEBUTTONUP:
-				mouseButtonUpHandler(event.button);
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				mouseButtonDownHandler(event.button);
-				break;
-			case SDL_MOUSEMOTION:
-				mouseMotionHandler(event.motion);
-				break;
-			case SDL_QUIT:
-				mEngineStopped = true;
-				break;
-			default:
-				updateScene();
-				drawScene();
-				break;
+			switch(event.type)
+			{
+				case SDL_USEREVENT:
+					userEventHandler(&event);
+					break;
+				case SDL_KEYDOWN:
+					keyBoardHandler(&event);
+					break;
+				case SDL_MOUSEBUTTONUP:
+					mouseButtonUpHandler(event.button);
+					break;
+				case SDL_MOUSEBUTTONDOWN:
+					mouseButtonDownHandler(event.button);
+					break;
+				case SDL_MOUSEMOTION:
+					mouseMotionHandler(event.motion);
+					break;
+				case SDL_QUIT:
+					mEngineStopped = true;
+					break;
+				default:
+					break;
+			}
 		}
+		updateScene();
+		drawScene();
 	}
 }
 
@@ -149,7 +151,7 @@ void DemoDraw::userEventHandler(SDL_Event* event)
 
 void DemoDraw::keyBoardHandler(SDL_Event* event)
 {
-	SDL_Log("Press key %d",event->key.keysym.scancode);
+	//SDL_Log("Press key %d",event->key.keysym.scancode);
 	mSceneCamera->onKeyboard(event->key.keysym.sym);
 }
 

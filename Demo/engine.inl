@@ -291,11 +291,10 @@ inline void compileShaderFromFile(const char* shader_file_path, GLuint shaderTyp
 
 }
 
-inline bool loadTexture2D(const wchar_t* file_name,GLuint textureID)
+inline GLuint loadTexture2D(const wchar_t* file_name)
 {
 	ILuint m_imageID = 0;
 	ILboolean success(0);
-	//GLuint textureID;
 
 	ilInit();
 	ilEnable(IL_ORIGIN_SET);
@@ -308,17 +307,23 @@ inline bool loadTexture2D(const wchar_t* file_name,GLuint textureID)
 	{
 		ILenum errorCode = ilGetError();
 		wprintf(iluErrorString(errorCode));
-		//load fail
 		ilDeleteImages(1,&m_imageID);
-		return false;
+		SDL_Log("Load %s fail!",file_name);
+		//return false;
+	}
+	else
+	{
+		SDL_Log("Load texture %s success!",file_name);
 	}
 
-	printf("Load texture success \n");
-
 	ilConvertImage(IL_RGBA,IL_UNSIGNED_BYTE);
-
+	GLuint textureID;
+	glGenTextures(1,&textureID);
 	glBindTexture(GL_TEXTURE_2D,textureID);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT),0,GL_RGBA,GL_UNSIGNED_BYTE,ilGetData());
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
-	return true;
+	checkError("Load&Init Texture!");
+	return textureID;
 }
