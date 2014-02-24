@@ -1,91 +1,98 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="shader">
       <UniqueIdentifier>{dc0d1250-93ca-413d-924d-e6ea05b03dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{9d728cd8-afc9-481b-866c-68a189adf977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logic">
+      <UniqueIdentifier>{9a8f0996-73a7-4c2e-92db-20246c2ef9f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{6e8df1c2-4820-43ed-8f40-e317c0c2eea7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BattleUnit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HeroCard.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="camera.h">
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="DataHelper.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\external\gel\stxutif.h">
-      <Filter>Header Files</Filter>
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="BattleScene.h">
-      <Filter>Header Files</Filter>
+      <Filter>logic</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="BattleUnit.h">
+      <Filter>logic</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroCard.h">
+      <Filter>logic</Filter>
     </ClInclude>
     <ClInclude Include="TerrainRender.h">
-      <Filter>Header Files</Filter>
+      <Filter>render</Filter>
     </ClInclude>
-    <ClInclude Include="assertLoader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DemoDraw.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelRender.h">
+      <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DemoDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BattleUnit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HeroCard.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="camera.cpp">
+      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="DataHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\external\gel\gel.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="BattleScene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>logic</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="BattleUnit.cpp">
+      <Filter>logic</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroCard.cpp">
+      <Filter>logic</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoDraw.cpp">
+      <Filter>render</Filter>
     </ClCompile>
     <ClCompile Include="TerrainRender.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="assertLoader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Demo.cpp" />
+    <ClCompile Include="ModelRender.cpp">
+      <Filter>render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine.inl" />
     <None Include="..\data\shader\terrain_fs.glsl">
       <Filter>shader</Filter>
     </None>
     <None Include="..\data\shader\terrain_vs.glsl">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="engine.inl">
+      <Filter>common</Filter>
+    </None>
+    <None Include="..\data\shader\model.fs">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\model.vs">
       <Filter>shader</Filter>
     </None>
   </ItemGroup>

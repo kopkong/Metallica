@@ -1,6 +1,7 @@
 #pragma once
 #include "DataHelper.h"
 #include "TerrainRender.h"
+#include "ModelRender.h"
 #include "camera.h"
 
 class DemoDraw 
@@ -34,5 +35,6 @@ public:
 private:
 	Camera* mSceneCamera;
 	TerrainRender* mTerrainRender;
+	ModelRender* mModelRender;
 };
 

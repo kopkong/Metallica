@@ -8,6 +8,7 @@ DemoDraw::DemoDraw(int width,int height)
 	mDataMgr = new DataHelper();
 	mSceneCamera = new Camera(mWindowWidth,mWindowHeight);
 	mTerrainRender = new TerrainRender(mSceneCamera);
+	mModelRender = new ModelRender(mSceneCamera,"../external/assimp--3.0.1270-sdk/test/models/OBJ/", "spider.obj");
 }
 
 DemoDraw::~DemoDraw(void)
@@ -79,7 +80,8 @@ bool DemoDraw::initData()
 
 bool DemoDraw::initRender()
 {
-	mTerrainRender->init();
+	//mTerrainRender->init();
+	mModelRender->init();
 
 	return true;
 }
@@ -91,7 +93,8 @@ void DemoDraw::updateScene()
 
 void DemoDraw::drawScene()
 {
-	mTerrainRender->render();
+	//mTerrainRender->render();
+	mModelRender->render();
 	SDL_GL_SwapWindow(mSDLMainWindow);
 }
 

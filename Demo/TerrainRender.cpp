@@ -41,11 +41,6 @@ void TerrainRender::init()
 	glBufferData(GL_ARRAY_BUFFER,mVertexDataSize,mVertexData,GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
-	//glGenBuffers(1,&mElementBuffer);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mElementBuffer);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER,mVertexElementDataSize,mVertexElementData,GL_STATIC_DRAW);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-
 	checkError("After Init");
 }
 
