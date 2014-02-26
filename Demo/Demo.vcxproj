@@ -82,6 +82,7 @@
     <ClInclude Include="DataHelper.h" />
     <ClInclude Include="DemoDraw.h" />
     <ClInclude Include="HeroCard.h" />
+    <ClInclude Include="MagicCube.h" />
     <ClInclude Include="ModelRender.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="DemoDraw.cpp" />
     <ClCompile Include="HeroCard.cpp" />
+    <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="ModelRender.cpp" />
     <ClCompile Include="TerrainRender.cpp" />
   </ItemGroup>

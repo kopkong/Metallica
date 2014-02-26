@@ -20,15 +20,6 @@ struct vertex_v2fv2f
 
 struct vertex_v3fv2f
 {
-	vertex_v3fv2f
-	(
-		glm::vec3 const & Position,
-		glm::vec2 const & Texcoord
-	) :
-		Position(Position),
-		Texcoord(Texcoord)
-	{}
-
 	glm::vec3 Position;
 	glm::vec2 Texcoord;
 };

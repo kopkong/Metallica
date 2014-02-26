@@ -48,6 +48,9 @@
     <ClInclude Include="ModelRender.h">
       <Filter>render</Filter>
     </ClInclude>
+    <ClInclude Include="MagicCube.h">
+      <Filter>render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -76,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="ModelRender.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicCube.cpp">
       <Filter>render</Filter>
     </ClCompile>
   </ItemGroup>
