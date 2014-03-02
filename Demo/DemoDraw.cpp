@@ -160,7 +160,7 @@ void DemoDraw::userEventHandler(SDL_Event* event)
 void DemoDraw::keyBoardHandler(SDL_Event* event)
 {
 	//SDL_Log("Press key %d",event->key.keysym.scancode);
-	//mSceneCamera->onKeyboard(event->key.keysym.sym);
+	mSceneCamera->onKeyboard(event->key.keysym.sym);
 }
 
 void DemoDraw::mouseButtonUpHandler(SDL_MouseButtonEvent button)

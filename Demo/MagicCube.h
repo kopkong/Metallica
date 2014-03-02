@@ -5,8 +5,8 @@
 #include "engine.inl"
 #include <map>
 
-#define CUBEXROWS 1
-#define CUBEZROWS 1
+#define CUBEXROWS 2
+#define CUBEZROWS 2
 #define CUBEYROWS 2
 
 class MagicCube
@@ -26,10 +26,16 @@ private:
 	GLuint mProgName;
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
+	GLuint mUniformTextureBufferOffset;
 
 	GLuint mVertexBuffer;
-	GLuint mCubeTextureName;
+	GLuint mInstancedVertexOffsetBuffer;
+	GLuint mTextureCubeFace;
+	GLuint mTextureInstanceOffsetBuffer;
+
 	vector<vertex_v3fv2f> mVertexData;
+	vector<glm::vec3> mInstancedOffsetData;
+	unsigned int mInstanceCount;
 	unsigned int mVertexCount;
 
 	void generateCube();

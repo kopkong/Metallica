@@ -1,9 +1,13 @@
 MagicCube.
 
-0. load model 
 1. Generate vertex position.
 2. Generate textureCoord.
 3. Draw the cube.
 4. Rotate the cube.(Entire)
-5. Picking.
-6. Control the rotatation.
+5. Texture buffer.
+6. Instanced drawing.
+7. Generate mipmap.
+
+Ex
+1. Picking.
+2. Control the rotatation.

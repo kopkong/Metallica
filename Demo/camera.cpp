@@ -4,6 +4,9 @@ using namespace glm;
 
 const static float STEP_SCALE = 0.3f;
 const static int MARGIN = 10;
+const glm::vec3 YAXIS = glm::vec3(0.0,1.0,0.0);
+const glm::vec3 XAXIS = glm::vec3(1.0,0.0,0.0);
+const glm::vec3 ZAXIS = glm::vec3(0.0,0.0,1.0);
 
 Camera::Camera(int WindowWidth, int WindowHeight)
 {
@@ -19,53 +22,15 @@ Camera::Camera(int WindowWidth, int WindowHeight)
 	mHorizontalAngle = 3.14f;
 	// Initial vertical angle : none
 	mVerticalAngle = 0.0f;
-}
 
-Camera::Camera(int WindowWidth, int WindowHeight, const glm::vec3& Pos, const glm::vec3& Target, const glm::vec3& Up)
-{
-    mWindowWidth  = WindowWidth;
-    mWindowHeight = WindowHeight;
-	resetCamera(Pos,Target,Up);
+	keepRotationX = false;
+	keepRotationY = false;
+	keepRotationZ = false;
 }
 
 void Camera::init()
 {
-    glm::vec3 HTarget(mTarget.x, 0.0, mTarget.z);
-    glm::normalize(HTarget);
-    
-    /*if (HTarget.z >= 0.0f)
-    {
-        if (HTarget.x >= 0.0f)
-        {
-            m_AngleH = 360.0f - ToDegree(asin(HTarget.z));
-        }
-        else
-        {
-            m_AngleH = 180.0f + ToDegree(asin(HTarget.z));
-        }
-    }
-    else
-    {
-        if (HTarget.x >= 0.0f)
-        {
-            m_AngleH = ToDegree(asin(-HTarget.z));
-        }
-        else
-        {
-            m_AngleH = 90.0f + ToDegree(asin(-HTarget.z));
-        }
-    }
-    
-    m_AngleV = -ToDegree(asin(mTarget.y));*/
-
-    m_OnUpperEdge = false;
-    m_OnLowerEdge = false;
-    m_OnLeftEdge  = false;
-    m_OnRightEdge = false;
-    //m_mousePos.x  = mWindowWidth / 2;
-    //m_mousePos.y  = mWindowHeight / 2;
-
-    //glutWarpPointer(m_mousePos.x, m_mousePos.y);
+   
 }
 
 void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const glm::vec3& Up)
@@ -77,51 +42,24 @@ void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const gl
     mUp = Up;
     glm::normalize(mUp);
 
-    init();
 }
 
-bool Camera::onKeyboard(SDL_Keycode Key)
+void Camera::onKeyboard(SDL_Keycode Key)
 {
-    bool Ret = false;
-
-    switch (Key) {
-
-	case SDLK_UP:
-        {
-            mPos += (mTarget * STEP_SCALE);
-            Ret = true;
-        }
-        break;
-
-	case SDLK_DOWN:
-        {
-            mPos -= (mTarget * STEP_SCALE);
-            Ret = true;
-        }
-        break;
-
-	case SDLK_LEFT:
-        {
-			glm::vec3 Left = glm::cross(mTarget,mUp);
-			glm::normalize(Left);
-            Left *= STEP_SCALE;
-            mPos += Left;
-            Ret = true;
-        }
-        break;
-
-    case SDLK_RIGHT:
-        {
-            glm::vec3 Right = glm::cross(mUp,mTarget);
-			glm::normalize(Right);
-            Right *= STEP_SCALE;
-            mPos += Right;
-            Ret = true;
-        }
-        break;
+	switch (Key) {
+	    case SDLK_x:
+			keepRotationX = !keepRotationX;
+			break;
+		case SDLK_y:
+			keepRotationY = !keepRotationY;
+			break;
+		case SDLK_z:
+			keepRotationZ = !keepRotationZ;
+			break;
+		default:
+			break;
     }
 
-    return Ret;
 }
 
 void Camera::onMouseDown(SDL_MouseButtonEvent button)
@@ -213,11 +151,23 @@ void Camera::zoomOut()
 
 void Camera::rotateModel(float hAngle,float vAngle)
 {
-	glm::vec3 yAxis = glm::vec3(0.0,1.0,0.0);
-	glm::vec3 xAxis = glm::vec3(1.0,0.0,0.0);
+	mModel = rotate(mModel,hAngle,YAXIS);
+	mModel = rotate(mModel,vAngle,XAXIS);
+}
 
-	mModel = rotate(mModel,hAngle,yAxis);
-	mModel = rotate(mModel,vAngle,xAxis);
+void Camera::rotateModelbyX()
+{
+	mModel = rotate(mModel,1.0f,XAXIS);
+}
+
+void Camera::rotateModelbyY()
+{
+	mModel = rotate(mModel,1.0f,YAXIS);
+}
+
+void Camera::rotateModelbyZ()
+{
+	mModel = rotate(mModel,1.0f,ZAXIS);
 }
 
 glm::mat4 Camera::getMVP()
@@ -232,8 +182,12 @@ glm::mat4 Camera::getMVP()
 								mUp  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
 
-	// Model matrix : an identity matrix (model will be at the origin)
-	// glm::mat4 Model      = glm::mat4(1.0f);
+	if(keepRotationX)
+		rotateModelbyX();
+	if(keepRotationY)
+		rotateModelbyY();
+	if(keepRotationZ)
+		rotateModelbyZ();
 
 	// Our ModelViewProjection : multiplication of our 3 matrices
 	glm::mat4 MVP        = Projection * View * mModel; // Remember, matrix multiplication is the other way around

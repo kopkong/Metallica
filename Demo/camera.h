@@ -20,7 +20,7 @@ public:
 
 	glm::mat4 getMVP();
 
-    bool onKeyboard(SDL_Keycode Key);
+    void onKeyboard(SDL_Keycode Key);
 
 	void onMouseDown(SDL_MouseButtonEvent button);
 	void onMouseUp(SDL_MouseButtonEvent button);
@@ -51,11 +51,14 @@ private:
 	void zoomOut(); // move far
 	void rotateModel(const float h,const float v);
     void update();
+	void rotateModelbyX();
+	void rotateModelbyY();
+	void rotateModelbyZ();
 
     glm::vec3 mPos;
     glm::vec3 mTarget;
     glm::vec3 mUp;
-	glm::mat4 mModel ;
+	glm::mat4 mModel;
 
     int mWindowWidth;
     int mWindowHeight;
@@ -65,10 +68,9 @@ private:
 	// Initial vertical angle : none
 	float mVerticalAngle;
 
-    bool m_OnUpperEdge;
-    bool m_OnLowerEdge;
-    bool m_OnLeftEdge;
-    bool m_OnRightEdge;
+	bool keepRotationX;
+	bool keepRotationY;
+	bool keepRotationZ;
 
     glm::ivec2 mMousePos;
 };
