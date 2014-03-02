@@ -25,7 +25,8 @@ public:
 	void onMouseDown(SDL_MouseButtonEvent button);
 	void onMouseUp(SDL_MouseButtonEvent button);
 
-	void onMouseMotion(SDL_MouseMotionEvent motion);
+	void onMouseMotion(SDL_MouseButtonEvent event, SDL_MouseMotionEvent motion);
+	void onMouseWheel(SDL_MouseWheelEvent wheel);
 
     void onRender();
 
@@ -45,19 +46,24 @@ public:
     }
 
 private:
-
     void init();
+	void zoomIn(); // move close
+	void zoomOut(); // move far
+	void rotateModel(const float h,const float v);
     void update();
 
     glm::vec3 mPos;
     glm::vec3 mTarget;
     glm::vec3 mUp;
+	glm::mat4 mModel ;
 
     int mWindowWidth;
     int mWindowHeight;
 
-    float m_AngleH;
-    float m_AngleV;
+	// Initial horizontal angle : toward -Z
+	float mHorizontalAngle;
+	// Initial vertical angle : none
+	float mVerticalAngle;
 
     bool m_OnUpperEdge;
     bool m_OnLowerEdge;

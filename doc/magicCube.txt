@@ -1,5 +1,6 @@
 MagicCube.
 
+0. load model 
 1. Generate vertex position.
 2. Generate textureCoord.
 3. Draw the cube.

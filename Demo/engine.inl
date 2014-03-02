@@ -7,10 +7,18 @@
 #include "../external/gel/stxutif.h"
 #include <fstream>
 #include <sstream>
+#include <assimp\scene.h>
 
 using namespace std;
 
 static int seed = 0;
+
+struct aiVertex
+{
+	aiVector3D pos;
+	aiVector2D uv;
+	aiVector3D normal;
+};
 
 struct vertex_v2fv2f
 {
@@ -20,6 +28,12 @@ struct vertex_v2fv2f
 
 struct vertex_v3fv2f
 {
+	vertex_v3fv2f(glm::vec3 pos,glm::vec2 uvCoord)
+	{
+		Position = pos;
+		Texcoord = uvCoord;
+	};
+
 	glm::vec3 Position;
 	glm::vec2 Texcoord;
 };

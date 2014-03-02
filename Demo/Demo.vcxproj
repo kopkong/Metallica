@@ -38,7 +38,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Win32\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,6 +102,8 @@
     <ClCompile Include="TerrainRender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data\shader\cubemagic_fs.glsl" />
+    <None Include="..\data\shader\cubemagic_vs.glsl" />
     <None Include="..\data\shader\model.fs" />
     <None Include="..\data\shader\model.vs" />
     <None Include="..\data\shader\terrain_fs.glsl" />

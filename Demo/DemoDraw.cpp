@@ -8,6 +8,7 @@ DemoDraw::DemoDraw(int width,int height)
 	mDataMgr = new DataHelper();
 	mSceneCamera = new Camera(mWindowWidth,mWindowHeight);
 	mTerrainRender = new TerrainRender(mSceneCamera);
+	mMagicCube = new MagicCube(mSceneCamera);
 	mModelRender = new ModelRender(mSceneCamera,"../external/assimp--3.0.1270-sdk/test/models/OBJ/", "spider.obj");
 }
 
@@ -81,8 +82,8 @@ bool DemoDraw::initData()
 bool DemoDraw::initRender()
 {
 	//mTerrainRender->init();
-	mModelRender->init();
-
+	//mModelRender->init();
+	mMagicCube->init();
 	return true;
 }
 
@@ -94,7 +95,8 @@ void DemoDraw::updateScene()
 void DemoDraw::drawScene()
 {
 	//mTerrainRender->render();
-	mModelRender->render();
+	//mModelRender->render();
+	mMagicCube->render();
 	SDL_GL_SwapWindow(mSDLMainWindow);
 }
 
@@ -125,7 +127,10 @@ void DemoDraw::run()
 					mouseButtonDownHandler(event.button);
 					break;
 				case SDL_MOUSEMOTION:
-					mouseMotionHandler(event.motion);
+					mouseMotionHandler(event.button,event.motion);
+					break;
+				case SDL_MOUSEWHEEL:
+					mouseWheelHandler(event.wheel);
 					break;
 				case SDL_QUIT:
 					mEngineStopped = true;
@@ -168,9 +173,14 @@ void DemoDraw::mouseButtonDownHandler(SDL_MouseButtonEvent button)
 	mSceneCamera->onMouseDown(button);
 }
 
-void DemoDraw::mouseMotionHandler(SDL_MouseMotionEvent motion)
+void DemoDraw::mouseMotionHandler(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	mSceneCamera->onMouseMotion(motion);
+	mSceneCamera->onMouseMotion(button,motion);
+}
+
+void DemoDraw::mouseWheelHandler(SDL_MouseWheelEvent wheel)
+{
+	mSceneCamera->onMouseWheel(wheel);
 }
 
 

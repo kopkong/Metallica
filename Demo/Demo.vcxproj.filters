@@ -101,5 +101,11 @@
     <None Include="..\data\shader\model.vs">
       <Filter>shader</Filter>
     </None>
+    <None Include="..\data\shader\cubemagic_fs.glsl">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\cubemagic_vs.glsl">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

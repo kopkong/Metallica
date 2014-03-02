@@ -3,6 +3,7 @@
 #include "TerrainRender.h"
 #include "ModelRender.h"
 #include "camera.h"
+#include "MagicCube.h"
 
 class DemoDraw 
 {
@@ -21,7 +22,8 @@ public:
 	void keyBoardHandler(SDL_Event*);
 	void mouseButtonDownHandler(SDL_MouseButtonEvent);
 	void mouseButtonUpHandler(SDL_MouseButtonEvent);
-	void mouseMotionHandler(SDL_MouseMotionEvent);
+	void mouseMotionHandler(SDL_MouseButtonEvent,SDL_MouseMotionEvent);
+	void mouseWheelHandler(SDL_MouseWheelEvent);
 
 	DataHelper *mDataMgr;
 	bool mEngineStopped;
@@ -36,5 +38,6 @@ private:
 	Camera* mSceneCamera;
 	TerrainRender* mTerrainRender;
 	ModelRender* mModelRender;
+	MagicCube* mMagicCube;
 };
 

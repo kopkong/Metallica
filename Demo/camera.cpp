@@ -2,7 +2,7 @@
 #include <gtc/matrix_transform.hpp>
 using namespace glm;
 
-const static float STEP_SCALE = 0.1f;
+const static float STEP_SCALE = 0.3f;
 const static int MARGIN = 10;
 
 Camera::Camera(int WindowWidth, int WindowHeight)
@@ -14,9 +14,12 @@ Camera::Camera(int WindowWidth, int WindowHeight)
 	glm::normalize(mTarget);
     mUp           = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    //Init();
+    mModel   = glm::mat4(1.0f);
+	// Initial horizontal angle : toward -Z
+	mHorizontalAngle = 3.14f;
+	// Initial vertical angle : none
+	mVerticalAngle = 0.0f;
 }
-
 
 Camera::Camera(int WindowWidth, int WindowHeight, const glm::vec3& Pos, const glm::vec3& Target, const glm::vec3& Up)
 {
@@ -123,96 +126,56 @@ bool Camera::onKeyboard(SDL_Keycode Key)
 
 void Camera::onMouseDown(SDL_MouseButtonEvent button)
 {
-	mMousePos.x = button.x;
-	mMousePos.y = button.y;
+
 }
 
 void Camera::onMouseUp(SDL_MouseButtonEvent button)
 {
-	mMousePos = glm::ivec2(0,0);
+	mMousePos.x = 0;
+	mMousePos.y = 0;
 }
 
-void Camera::onMouseMotion(SDL_MouseMotionEvent motion)
+void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	//if(motion.state == SDL_PRESSED)
-	if(mMousePos.x + mMousePos.y > 0)
+	//SDL_Log("Mouse index : %d",button.button);
+	//SDL_Log("Mouse state: %d",button.state);
+	//SDL_Log("Motion state: %d",motion.state);
+	if(motion.state == SDL_BUTTON_LMASK)
 	{
-		//SDL_Log("motion.x = %d",motion.x);
-		//SDL_Log("motion.y = %d",motion.y);
-
-		int x = motion.x;
-		int y = motion.y;
-
-		const int DeltaX = x - mMousePos.x;
-		const int DeltaY = y - mMousePos.y;
-
-		m_AngleH += (float)DeltaX / 20.0f;
-		m_AngleV += (float)DeltaY / 20.0f;
-
-		if (DeltaX == 0) {
-			if (x <= MARGIN) {
-			//    m_AngleH -= 1.0f;
-				m_OnLeftEdge = true;
-			}
-			else if (x >= (mWindowWidth - MARGIN)) {
-			//    m_AngleH += 1.0f;
-				m_OnRightEdge = true;
-			}
+		if(mMousePos.x == 0 && mMousePos.y == 0)
+		{
+			mMousePos.x = button.x;
+			mMousePos.y = button.y;
 		}
-		else {
-			m_OnLeftEdge = false;
-			m_OnRightEdge = false;
-		}
+		else
+		{
+			int deltaX = button.x - mMousePos.x;
+			int deltaY = button.y - mMousePos.y;
 
-		if (DeltaY == 0) {
-			if (y <= MARGIN) {
-				m_OnUpperEdge = true;
-			}
-			else if (y >= (mWindowHeight - MARGIN)) {
-				m_OnLowerEdge = true;
-			}
+			float hAngle = deltaY > 0 ? -1.0f: 1.0f;
+			float vAngle = deltaX > 0 ? 1.0f: -1.0f;
+			
+			rotateModel(hAngle,vAngle);
 		}
-		else {
-			m_OnUpperEdge = false;
-			m_OnLowerEdge = false;
-		}
-
-		mMousePos.x = x;
-		mMousePos.y = y;
-
-		update();
 	}
+	else
+	{
+		mMousePos.x = 0;
+		mMousePos.y = 0;
+	}
+}
+
+void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)
+{
+	if(wheel.y > 0)
+		zoomIn();
+	else
+		zoomOut();
 }
 
 void Camera::onRender()
 {
-    bool ShouldUpdate = false;
-
-    if (m_OnLeftEdge) {
-        m_AngleH -= 0.1f;
-        ShouldUpdate = true;
-    }
-    else if (m_OnRightEdge) {
-        m_AngleH += 0.1f;
-        ShouldUpdate = true;
-    }
-
-    if (m_OnUpperEdge) {
-        if (m_AngleV > -90.0f) {
-            m_AngleV -= 0.1f;
-            ShouldUpdate = true;
-        }
-    }
-    else if (m_OnLowerEdge) {
-        if (m_AngleV < 90.0f) {
-           m_AngleV += 0.1f;
-           ShouldUpdate = true;
-        }
-    }
-
-    if (ShouldUpdate) {
-        update();
-    }
+  
 }
 
 void Camera::update()
@@ -236,6 +199,27 @@ void Camera::update()
     glm::normalize(mUp);
 }
 
+void Camera::zoomIn()
+{
+	glm::vec3 direction = normalize(mPos - mTarget);
+	mPos -= direction * STEP_SCALE;
+}
+
+void Camera::zoomOut()
+{
+	glm::vec3 direction = normalize(mPos - mTarget);
+	mPos += direction * STEP_SCALE;
+}
+
+void Camera::rotateModel(float hAngle,float vAngle)
+{
+	glm::vec3 yAxis = glm::vec3(0.0,1.0,0.0);
+	glm::vec3 xAxis = glm::vec3(1.0,0.0,0.0);
+
+	mModel = rotate(mModel,hAngle,yAxis);
+	mModel = rotate(mModel,vAngle,xAxis);
+}
+
 glm::mat4 Camera::getMVP()
 {
 	// Projection matrix : 45?Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -247,10 +231,12 @@ glm::mat4 Camera::getMVP()
 								mTarget,
 								mUp  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
+
 	// Model matrix : an identity matrix (model will be at the origin)
-	glm::mat4 Model      = glm::mat4(1.0f);
+	// glm::mat4 Model      = glm::mat4(1.0f);
+
 	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP        = Projection * View * Model; // Remember, matrix multiplication is the other way around
+	glm::mat4 MVP        = Projection * View * mModel; // Remember, matrix multiplication is the other way around
 
 
 	return MVP;

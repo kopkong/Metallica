@@ -3,8 +3,11 @@
 #include "stdafx.h"
 #include "camera.h"
 #include "engine.inl"
+#include <map>
 
-#define CUBEROWSIZE 3
+#define CUBEXROWS 1
+#define CUBEZROWS 1
+#define CUBEYROWS 2
 
 class MagicCube
 {
@@ -14,7 +17,6 @@ public:
 
 	Camera *mCamera;
 	
-
 	void init();
 	void exit();
 	void render();
@@ -25,9 +27,12 @@ private:
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
 
-	vertex_v3fv2f mVertexData;
+	GLuint mVertexBuffer;
+	GLuint mCubeTextureName;
+	vector<vertex_v3fv2f> mVertexData;
 	unsigned int mVertexCount;
 
 	void generateCube();
+	void initializeCamera();
 };
 
