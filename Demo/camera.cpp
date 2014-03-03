@@ -22,10 +22,6 @@ Camera::Camera(int WindowWidth, int WindowHeight)
 	mHorizontalAngle = 3.14f;
 	// Initial vertical angle : none
 	mVerticalAngle = 0.0f;
-
-	keepRotationX = false;
-	keepRotationY = false;
-	keepRotationZ = false;
 }
 
 void Camera::init()
@@ -46,19 +42,19 @@ void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const gl
 
 void Camera::onKeyboard(SDL_Keycode Key)
 {
-	switch (Key) {
-	    case SDLK_x:
-			keepRotationX = !keepRotationX;
-			break;
-		case SDLK_y:
-			keepRotationY = !keepRotationY;
-			break;
-		case SDLK_z:
-			keepRotationZ = !keepRotationZ;
-			break;
-		default:
-			break;
-    }
+	glm::vec3 direction = normalize(mPos-mTarget);
+	glm::vec3 right = cross(direction,mUp);
+
+	switch(Key)
+	{
+	case SDLK_LEFT:
+		mPos -= right;
+		break;
+	case SDLK_RIGHT:
+		mPos += right;
+		break;
+	default:break;
+	}
 
 }
 
@@ -92,8 +88,7 @@ void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent moti
 
 			float hAngle = deltaY > 0 ? -1.0f: 1.0f;
 			float vAngle = deltaX > 0 ? 1.0f: -1.0f;
-			
-			rotateModel(hAngle,vAngle);
+
 		}
 	}
 	else
@@ -111,32 +106,6 @@ void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)
 		zoomOut();
 }
 
-void Camera::onRender()
-{
-  
-}
-
-void Camera::update()
-{
-    const glm::vec3 Vaxis(0.0f, 1.0f, 0.0f);
-
-    // Rotate the view vector by the horizontal angle around the vertical axis
-    glm::vec3 View(1.0f, 0.0f, 0.0f);	
-    //View.Rotate(m_AngleH, Vaxis);
-    //View.Normalize();
-
-    // Rotate the view vector by the vertical angle around the horizontal axis
-	glm::vec3 Haxis = glm::cross(Vaxis,View);
-	glm::normalize(Haxis);
-    //View.Rotate(m_AngleV, Haxis);
-       
-    mTarget = View;
-	glm::normalize(mTarget);
-
-	mUp = glm::cross(mTarget,Haxis);
-    glm::normalize(mUp);
-}
-
 void Camera::zoomIn()
 {
 	glm::vec3 direction = normalize(mPos - mTarget);
@@ -149,49 +118,28 @@ void Camera::zoomOut()
 	mPos += direction * STEP_SCALE;
 }
 
-void Camera::rotateModel(float hAngle,float vAngle)
+void Camera::initProjection()
 {
-	mModel = rotate(mModel,hAngle,YAXIS);
-	mModel = rotate(mModel,vAngle,XAXIS);
+	mProjection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 }
 
-void Camera::rotateModelbyX()
+void Camera::initView()
 {
-	mModel = rotate(mModel,1.0f,XAXIS);
+	mView = glm::lookAt(mPos,mTarget,mUp);
 }
 
-void Camera::rotateModelbyY()
+void Camera::setModel(glm::mat4 model)
 {
-	mModel = rotate(mModel,1.0f,YAXIS);
-}
-
-void Camera::rotateModelbyZ()
-{
-	mModel = rotate(mModel,1.0f,ZAXIS);
+	mModel = model;
 }
 
 glm::mat4 Camera::getMVP()
 {
-	// Projection matrix : 45?Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
-
-	// Camera matrix
-	glm::mat4 View       = glm::lookAt(
-								mPos,
-								mTarget,
-								mUp  // Head is up (set to 0,-1,0 to look upside-down)
-						   );
-
-	if(keepRotationX)
-		rotateModelbyX();
-	if(keepRotationY)
-		rotateModelbyY();
-	if(keepRotationZ)
-		rotateModelbyZ();
+	initProjection();
+	initView();
 
 	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP        = Projection * View * mModel; // Remember, matrix multiplication is the other way around
-
+	glm::mat4 MVP        = mProjection * mView * mModel; // Remember, matrix multiplication is the other way around
 
 	return MVP;
 }

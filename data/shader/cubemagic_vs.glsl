@@ -5,10 +5,11 @@ layout(location = 1) in vec2 textureCoord;
 
 out vec2 texCoord;
 uniform mat4 MVP;
-uniform samplerBuffer InstancedOffset;
+//uniform samplerBuffer InstancedOffset;
 
 void main(){
-	vec3 vertex_pos = vertexPosition_modelspace + texelFetch(InstancedOffset,gl_InstanceID).xyz;
-	gl_Position =  MVP * vec4(vertex_pos,1);
+	//vec3 vertex_pos = vertexPosition_modelspace + texelFetch(InstancedOffset,gl_InstanceID).xyz;
+	//gl_Position =  MVP * vec4(vertex_pos,1);
+	gl_Position = MVP * vec4(vertexPosition_modelspace,1);
 	texCoord = textureCoord;
 }

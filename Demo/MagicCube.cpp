@@ -1,17 +1,21 @@
 #include "StdAfx.h"
 #include "MagicCube.h"
+#include <gtc/matrix_transform.hpp>
+
+const float CUBEMARGIN = 3.5f;
 
 MagicCube::MagicCube(Camera* pCamera)
 {
 	mCamera = pCamera;
+	mKeepRotateX = false;
+	mKeepRotateY = false;
+	mKeepRotateZ = false;
 }
-
 
 MagicCube::~MagicCube(void)
 {
 	
 }
-
 
 void MagicCube::init()
 {
@@ -26,7 +30,7 @@ void MagicCube::init()
 	// Find uniform location
 	mUniformMVP = glGetUniformLocation(mProgName,"MVP");
 	mUniformCubeTexture = glGetUniformLocation(mProgName,"Sampler2D");
-	mUniformTextureBufferOffset = glGetUniformLocation(mProgName,"InstancedOffset");
+	//mUniformTextureBufferOffset = glGetUniformLocation(mProgName,"InstancedOffset");
 
 	// Load Textures
 	mTextureCubeFace = loadTexture2D(L"../data/cubemagic/cube.DDS");
@@ -39,16 +43,16 @@ void MagicCube::init()
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
 	// Initiliaz offest buffer
-	glGenTextures(1,&mInstancedVertexOffsetBuffer);
-	glBindBuffer(GL_TEXTURE_BUFFER,mInstancedVertexOffsetBuffer);
-	glBufferData(GL_TEXTURE_BUFFER,mInstanceCount * sizeof(glm::vec3), &mInstancedOffsetData[0],GL_STATIC_DRAW);
-	glBindBuffer(GL_TEXTURE_BUFFER,0);
+	//glGenTextures(1,&mInstancedVertexOffsetBuffer);
+	//glBindBuffer(GL_TEXTURE_BUFFER,mInstancedVertexOffsetBuffer);
+	//glBufferData(GL_TEXTURE_BUFFER,mInstanceCount * sizeof(glm::vec3), &mInstancedOffsetData[0],GL_STATIC_DRAW);
+	//glBindBuffer(GL_TEXTURE_BUFFER,0);
 
 	// Bind offset buffer to texture buffer object
-	glGenTextures(1,&mTextureInstanceOffsetBuffer);
-	glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
-	glTexBuffer(GL_TEXTURE_BUFFER,GL_RGB32F,mInstancedVertexOffsetBuffer);
-	glBindTexture(GL_TEXTURE_BUFFER,0);
+	//glGenTextures(1,&mTextureInstanceOffsetBuffer);
+	//glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
+	//glTexBuffer(GL_TEXTURE_BUFFER,GL_RGB32F,mInstancedVertexOffsetBuffer);
+	//glBindTexture(GL_TEXTURE_BUFFER,0);
 }
 
 void MagicCube::render()
@@ -70,13 +74,9 @@ void MagicCube::render()
 	glUniform1i(mUniformCubeTexture,0);
 
 	// Texture buffer
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
-	glUniform1i(mUniformTextureBufferOffset,1);
-
-	// MVP
-	glm::mat4 mvp = mCamera->getMVP();
-	glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
+	//glUniform1i(mUniformTextureBufferOffset,1);
 
 	// Cull face
 	//glFrontFace(GL_CCW);
@@ -87,8 +87,17 @@ void MagicCube::render()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	//glDrawArrays(GL_TRIANGLES,0,mVertexCount);
-	glDrawArraysInstanced(GL_TRIANGLES,0,mVertexCount,mInstanceCount);
+	for(unsigned int i = 0 ; i < mInstanceCount ; i++)
+	{
+		rotateModel(mModelCoordinateData[i]);
+		mCamera->setModel(mModelCoordinateData[i]);
+
+		glm::mat4 mvp = mCamera->getMVP();
+
+		glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
+
+		glDrawArrays(GL_TRIANGLES,0,mVertexCount);
+	}
 
 	// Disable attrib pointer
 	glDisableVertexAttribArray(0);
@@ -97,14 +106,46 @@ void MagicCube::render()
 	checkError("cube render");
 }
 
+void MagicCube::update()
+{
+
+}
+
 void MagicCube::exit()
 {
 
 }
 
-void MagicCube::keyBoardHandler(SDL_Event*)
+void MagicCube::rotateModel(glm::mat4 &model)
 {
-	
+	const glm::vec3 YAXIS = glm::vec3(0.0,1.0,0.0);
+	const glm::vec3 XAXIS = glm::vec3(1.0,0.0,0.0);
+	const glm::vec3 ZAXIS = glm::vec3(0.0,0.0,1.0);
+
+	if(mKeepRotateX)
+		model = glm::gtc::matrix_transform::rotate(model,1.0f,XAXIS);
+	if(mKeepRotateY)
+		model = glm::gtc::matrix_transform::rotate(model,1.0f,YAXIS);
+	if(mKeepRotateZ)
+		model = glm::gtc::matrix_transform::rotate(model,1.0f,ZAXIS);
+}
+
+void MagicCube::onKeyboard(SDL_Keycode Key)
+{
+	switch(Key)
+	{
+	case SDLK_x:
+		mKeepRotateX = !mKeepRotateX;
+		break;
+	case SDLK_y:
+		mKeepRotateY = !mKeepRotateY;
+		break;
+	case SDLK_z:
+		mKeepRotateZ = !mKeepRotateZ;
+		break;
+	default:
+		break;
+	}
 }
 
 void MagicCube::generateCube()
@@ -155,12 +196,16 @@ void MagicCube::generateCube()
 		{
 			for(int x = 0; x < CUBEXROWS; x++)
 			{
-				mInstancedOffsetData.push_back(glm::vec3(x*2.1,y*2.1,z*2.1));
+				glm::vec3 offset = glm::vec3(x*CUBEMARGIN,y*CUBEMARGIN,z*CUBEMARGIN);
+				glm::mat4 model = glm::mat4(1.0);
+				model = glm::gtc::matrix_transform::translate(model,offset);
+
+				mModelCoordinateData.push_back(model);
 			}
 		}
 	}
 
-	mInstanceCount = mInstancedOffsetData.size();
+	mInstanceCount = mModelCoordinateData.size();
 }
 
 void MagicCube::initializeCamera()

@@ -19,6 +19,7 @@ public:
 	void resetCamera(const glm::vec3& pos,const glm::vec3& Target, const glm::vec3& Up);
 
 	glm::mat4 getMVP();
+	void setModel(glm::mat4);
 
     void onKeyboard(SDL_Keycode Key);
 
@@ -27,8 +28,6 @@ public:
 
 	void onMouseMotion(SDL_MouseButtonEvent event, SDL_MouseMotionEvent motion);
 	void onMouseWheel(SDL_MouseWheelEvent wheel);
-
-    void onRender();
 
     const glm::vec3& getPos() const
     {
@@ -47,10 +46,11 @@ public:
 
 private:
     void init();
+		
+	void initProjection();
+	void initView();
 	void zoomIn(); // move close
 	void zoomOut(); // move far
-	void rotateModel(const float h,const float v);
-    void update();
 	void rotateModelbyX();
 	void rotateModelbyY();
 	void rotateModelbyZ();
@@ -58,6 +58,9 @@ private:
     glm::vec3 mPos;
     glm::vec3 mTarget;
     glm::vec3 mUp;
+
+	glm::mat4 mProjection;
+	glm::mat4 mView;
 	glm::mat4 mModel;
 
     int mWindowWidth;
@@ -67,10 +70,6 @@ private:
 	float mHorizontalAngle;
 	// Initial vertical angle : none
 	float mVerticalAngle;
-
-	bool keepRotationX;
-	bool keepRotationY;
-	bool keepRotationZ;
 
     glm::ivec2 mMousePos;
 };

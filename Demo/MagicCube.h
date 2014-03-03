@@ -5,9 +5,9 @@
 #include "engine.inl"
 #include <map>
 
-#define CUBEXROWS 2
-#define CUBEZROWS 2
-#define CUBEYROWS 2
+#define CUBEXROWS 3
+#define CUBEZROWS 3
+#define CUBEYROWS 3
 
 class MagicCube
 {
@@ -17,10 +17,11 @@ public:
 
 	Camera *mCamera;
 	
+	void update();
 	void init();
 	void exit();
 	void render();
-	void keyBoardHandler(SDL_Event*);
+	void onKeyboard(SDL_Keycode Key);
 
 private:
 	GLuint mProgName;
@@ -35,9 +36,15 @@ private:
 
 	vector<vertex_v3fv2f> mVertexData;
 	vector<glm::vec3> mInstancedOffsetData;
+	vector<glm::mat4> mModelCoordinateData;
 	unsigned int mInstanceCount;
 	unsigned int mVertexCount;
 
+	bool mKeepRotateX;
+	bool mKeepRotateY;
+	bool mKeepRotateZ;
+
+	void rotateModel(glm::mat4 &model);
 	void generateCube();
 	void initializeCamera();
 };

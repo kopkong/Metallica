@@ -7,6 +7,7 @@ MagicCube.
 5. Texture buffer.
 6. Instanced drawing.
 7. Generate mipmap.
+8. Rotate single cube.
 
 Ex
 1. Picking.
