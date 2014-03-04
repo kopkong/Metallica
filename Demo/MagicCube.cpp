@@ -10,6 +10,8 @@ MagicCube::MagicCube(Camera* pCamera)
 	mKeepRotateX = false;
 	mKeepRotateY = false;
 	mKeepRotateZ = false;
+
+	mScreenSize = glm::ivec2(WINDOW_WIDTH,WINDOW_HEIGHT);
 }
 
 MagicCube::~MagicCube(void)
@@ -57,7 +59,7 @@ void MagicCube::init()
 
 void MagicCube::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUseProgram(mProgName);
 
@@ -79,9 +81,9 @@ void MagicCube::render()
 	//glUniform1i(mUniformTextureBufferOffset,1);
 
 	// Cull face
-	//glFrontFace(GL_CCW);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	// Depth test
 	glEnable(GL_DEPTH_TEST);
@@ -210,16 +212,29 @@ void MagicCube::generateCube()
 
 void MagicCube::initializeCamera()
 {
-	glm::vec3 targetPos = glm::vec3(CUBEXROWS,CUBEYROWS,CUBEZROWS);
+	glm::vec3 targetPos = glm::vec3(CUBEXROWS * CUBEMARGIN/2.0,CUBEYROWS * CUBEMARGIN/2.0,CUBEZROWS * CUBEMARGIN/2.0);
 
 	glm::vec3 cameraPos = glm::vec3(
 		4 + targetPos.x * 1.5,
-		5 + targetPos.y * 2,
+		5 + targetPos.y * 3,
 	    4 + targetPos.z * 1.5
 		);
 
 	glm::vec3 up = glm::vec3(0.0,1.0,0.0);
 
 	mCamera->resetCamera(cameraPos,targetPos,up);
+
+}
+
+void MagicCube::screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int screenHeight,
+		glm::mat4 viewMatrix,glm::mat4 projMatrix,glm::vec3& out_origin,glm::vec3& out_direction)
+{
+
+
+}
+
+void MagicCube::testRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction,glm::vec3 aabb_min,
+		glm::vec3 aabb_max, glm::mat4 modelMatrix,float& intersectionDistance)
+{
 
 }

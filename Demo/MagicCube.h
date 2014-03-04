@@ -5,9 +5,9 @@
 #include "engine.inl"
 #include <map>
 
-#define CUBEXROWS 3
-#define CUBEZROWS 3
-#define CUBEYROWS 3
+#define CUBEXROWS 4
+#define CUBEZROWS 4
+#define CUBEYROWS 4
 
 class MagicCube
 {
@@ -43,9 +43,15 @@ private:
 	bool mKeepRotateX;
 	bool mKeepRotateY;
 	bool mKeepRotateZ;
+	glm::ivec2 mMousePos;
+	glm::ivec2 mScreenSize;
 
 	void rotateModel(glm::mat4 &model);
 	void generateCube();
 	void initializeCamera();
+	void screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int screenHeight,
+		glm::mat4 viewMatrix,glm::mat4 projMatrix,glm::vec3& out_origin,glm::vec3& out_direction);
+	void testRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction,glm::vec3 aabb_min,
+		glm::vec3 aabb_max, glm::mat4 modelMatrix,float& intersectionDistance);
 };
 
