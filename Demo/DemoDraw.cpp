@@ -89,7 +89,7 @@ bool DemoDraw::initRender()
 
 void DemoDraw::updateScene()
 {
-
+	mMagicCube->update();
 }
 
 void DemoDraw::drawScene()
@@ -171,12 +171,13 @@ void DemoDraw::mouseButtonUpHandler(SDL_MouseButtonEvent button)
 
 void DemoDraw::mouseButtonDownHandler(SDL_MouseButtonEvent button)
 {
-	mSceneCamera->onMouseDown(button);
+	//mSceneCamera->onMouseDown(button);
+	mMagicCube->onMouseDown(button);
 }
 
 void DemoDraw::mouseMotionHandler(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	mSceneCamera->onMouseMotion(button,motion);
+	//mSceneCamera->onMouseMotion(button,motion);
 }
 
 void DemoDraw::mouseWheelHandler(SDL_MouseWheelEvent wheel)

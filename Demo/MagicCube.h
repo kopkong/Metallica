@@ -22,12 +22,15 @@ public:
 	void exit();
 	void render();
 	void onKeyboard(SDL_Keycode Key);
+	void onMouseDown(SDL_MouseButtonEvent);
 
 private:
-	GLuint mProgName;
+	GLuint mProgCubeRendering;
+	GLuint mProgRayTest;
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
 	GLuint mUniformTextureBufferOffset;
+	GLuint mUniformRayTestMVP;
 
 	GLuint mVertexBuffer;
 	GLuint mInstancedVertexOffsetBuffer;
@@ -39,6 +42,10 @@ private:
 	vector<glm::mat4> mModelCoordinateData;
 	unsigned int mInstanceCount;
 	unsigned int mVertexCount;
+	int mSelectedInstance;
+	bool mIsPicking;
+	glm::vec3 mRayOrigin;
+	glm::vec3 mRayDirection;
 
 	bool mKeepRotateX;
 	bool mKeepRotateY;
@@ -51,7 +58,9 @@ private:
 	void initializeCamera();
 	void screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int screenHeight,
 		glm::mat4 viewMatrix,glm::mat4 projMatrix,glm::vec3& out_origin,glm::vec3& out_direction);
-	void testRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction,glm::vec3 aabb_min,
+	bool testRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction,glm::vec3 aabb_min,
 		glm::vec3 aabb_max, glm::mat4 modelMatrix,float& intersectionDistance);
+	void renderRayTest();
+	void renderCube();
 };
 

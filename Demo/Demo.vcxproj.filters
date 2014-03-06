@@ -107,5 +107,11 @@
     <None Include="..\data\shader\cubemagic_vs.glsl">
       <Filter>shader</Filter>
     </None>
+    <None Include="..\data\shader\raytest.fragmentshader">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\raytest.vertexshader">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

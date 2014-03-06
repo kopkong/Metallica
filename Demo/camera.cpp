@@ -65,8 +65,8 @@ void Camera::onMouseDown(SDL_MouseButtonEvent button)
 
 void Camera::onMouseUp(SDL_MouseButtonEvent button)
 {
-	mMousePos.x = 0;
-	mMousePos.y = 0;
+	//mMousePos.x = 0;
+	//mMousePos.y = 0;
 }
 
 void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
@@ -74,7 +74,7 @@ void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent moti
 	//SDL_Log("Mouse index : %d",button.button);
 	//SDL_Log("Mouse state: %d",button.state);
 	//SDL_Log("Motion state: %d",motion.state);
-	if(motion.state == SDL_BUTTON_LMASK)
+	/*if(motion.state == SDL_BUTTON_MMASK)
 	{
 		if(mMousePos.x == 0 && mMousePos.y == 0)
 		{
@@ -95,7 +95,7 @@ void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent moti
 	{
 		mMousePos.x = 0;
 		mMousePos.y = 0;
-	}
+	}*/
 }
 
 void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)
@@ -131,6 +131,18 @@ void Camera::initView()
 void Camera::setModel(glm::mat4 model)
 {
 	mModel = model;
+}
+
+glm::mat4 Camera::getView()
+{
+	initView();
+	return mView;
+}
+
+glm::mat4 Camera::getProjection()
+{
+	initProjection();
+	return mProjection;
 }
 
 glm::mat4 Camera::getMVP()

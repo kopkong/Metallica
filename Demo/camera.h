@@ -19,13 +19,13 @@ public:
 	void resetCamera(const glm::vec3& pos,const glm::vec3& Target, const glm::vec3& Up);
 
 	glm::mat4 getMVP();
+	glm::mat4 getView();
+	glm::mat4 getProjection();
 	void setModel(glm::mat4);
 
     void onKeyboard(SDL_Keycode Key);
-
 	void onMouseDown(SDL_MouseButtonEvent button);
 	void onMouseUp(SDL_MouseButtonEvent button);
-
 	void onMouseMotion(SDL_MouseButtonEvent event, SDL_MouseMotionEvent motion);
 	void onMouseWheel(SDL_MouseWheelEvent wheel);
 

@@ -13,6 +13,7 @@ using namespace std;
 
 static int seed = 0;
 
+
 struct aiVertex
 {
 	aiVector3D pos;
@@ -37,6 +38,14 @@ struct vertex_v3fv2f
 	glm::vec3 Position;
 	glm::vec2 Texcoord;
 };
+
+template <typename T>
+inline void engineReverse(T &a, T &b)
+{
+	T w = a;
+	a = b;
+	b = w;
+}
 
 inline int convertStrToInt(string str)
 {
