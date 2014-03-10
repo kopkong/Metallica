@@ -49,6 +49,16 @@ void MagicCube::init()
 	mTextureCubeFace = loadTexture2D(L"../data/cubemagic/cube.DDS");
 	glGenerateMipmap(GL_TEXTURE_2D);
 
+	// Load Cube map
+	wchar_t const* cubemaps[6] = {
+		L"../data/cubemagic/right.jpg",L"../data/cubemagic/left.jpg",
+		L"../data/cubemagic/bottom.jpg",L"../data/cubemagic/top.jpg",
+		L"../data/cubemagic/front.jpg",L"../data/cubemagic/back.jpg"
+	};
+	mCubeMapSkyBox = loadTextureCubeMap(&cubemaps[0]);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,0);
+
 	// Initialize vertex buffer
 	glGenBuffers(1,&mVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
@@ -215,7 +225,26 @@ void MagicCube::renderRayTest()
 
 void MagicCube::update()
 {
+	mModelCoordinateData.clear();
+
 	// Update the rolling cube's position
+	for(int i=0; i< mMotionCubes.size(); i ++ )
+	{
+		// If render time is more than 1000 frames, than ignore the cube.
+		if(mMotionCubes[i].ElapsedTime > 1000)
+			continue;
+
+		// Increase elapsed time
+		mMotionCubes[i].ElapsedTime += 0.5f;
+
+		// Translate the model
+		glm::mat4 model(1.0);
+		glm::vec3 translateDistance = mMotionCubes[i].StartPos + mMotionCubes[i].Speed * mMotionCubes[i].ElapsedTime * mMotionCubes[i].MoveDirection;
+		model = glm::translate(model,translateDistance);
+
+		mModelCoordinateData.push_back(model);
+	}
+
 	mInstanceCount = mModelCoordinateData.size();
 
 	// Picking cube
@@ -495,5 +524,7 @@ void MagicCube::onMouseDown(SDL_MouseButtonEvent button)
 		// Launch a cube
 		MotionCube cube(mCamera->getPos(),mCamera->getLookatDirection(),LaunchSpeed,0.0f);
 		mMotionCubes.push_back(cube);
+
+		SDL_Log("Launch cube, current count is %d",mMotionCubes.size());
 	}
 }

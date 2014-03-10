@@ -42,9 +42,11 @@ public:
 
 private:
 	GLuint mProgCubeRendering;
+	GLuint mProgSkyBox;
 	GLuint mProgRayTest;
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
+	GLuint mUniformSkyTexture;
 	GLuint mUniformTextureBufferOffset;
 	GLuint mUniformRayTestMVP;
 
@@ -52,6 +54,7 @@ private:
 	GLuint mInstancedVertexOffsetBuffer;
 	GLuint mTextureCubeFace;
 	GLuint mTextureInstanceOffsetBuffer;
+	GLuint mCubeMapSkyBox;
 
 	vector<vertex_v3fv2f> mVertexData;
 	vector<MotionCube> mMotionCubes;

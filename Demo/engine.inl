@@ -353,3 +353,42 @@ inline GLuint loadTexture2D(const wchar_t* file_name)
 	checkError("Load&Init Texture!");
 	return textureID;
 }
+
+inline GLuint loadTextureCubeMap(wchar_t const** fileNames)
+{
+	ILuint imageID[6];
+	ILboolean success(0);
+
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilGenImages(6,&imageID[0]);
+
+	GLuint textureID;
+	glGenTextures(1,&textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,textureID);
+
+	for(int i=0; i < 6 ; i++)
+	{
+		ilBindImage(imageID[i]);
+		success = ilLoadImage(fileNames[i]);
+		if(!success)
+		{
+			ilDeleteImages(1,&imageID[0]);
+			SDL_Log("Load %s fail!",fileNames[i]);
+		}
+
+		ilConvertImage(IL_RGBA,IL_UNSIGNED_BYTE);
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,0,GL_RGB,ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT),
+			0,GL_RGBA,GL_UNSIGNED_BYTE,ilGetData());
+
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
+	checkError("Load&Init Texture Cube Map!");
+	return textureID;
+}
