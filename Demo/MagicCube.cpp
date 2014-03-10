@@ -72,7 +72,7 @@ void MagicCube::render()
 	
 	renderCube();
 
-	renderRayTest();
+	//renderRayTest();
 }
 
 void MagicCube::renderCube()
@@ -91,10 +91,11 @@ void MagicCube::renderCube()
 	glBindTexture(GL_TEXTURE_2D,mTextureCubeFace);
 	glUniform1i(mUniformCubeTexture,0);
 
-	// Texture buffer
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
-	//glUniform1i(mUniformTextureBufferOffset,1);
+	// Print Camera position
+	glm::vec3 cPos = mCamera->getPos();
+	glm::vec3 cDir = mCamera->getLookatDirection();
+	SDL_Log("Camera pos : {%f,%f,%f}",cPos.x,cPos.y,cPos.z);
+	SDL_Log("Camera look at position :{%f,%f,%f}",cDir.x,cDir.y,cDir.z);
 
 	// Cull face
 	glFrontFace(GL_CCW);
@@ -135,9 +136,14 @@ void MagicCube::renderRayTest()
 	GLuint rayVertexBuffer;
 	glGenBuffers(1,&rayVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER,rayVertexBuffer);
+
+	glm::vec3 rayStart = mRayOrigin ;//+ 5.0f * mRayDirection;
+	//glm::vec3 rayEnd   = mRayOrigin + 30.0f * mRayDirection;
+	glm::vec3 rayEnd = glm::vec3(0.0,0.0,0.0);
+
 	glm::vec3 ray[2] = {
-		mRayOrigin,
-		mRayDirection 
+		rayStart,
+		rayEnd 
 	};
 	glBufferData(GL_ARRAY_BUFFER,sizeof(glm::vec3) * 2,&ray[0],GL_STATIC_DRAW);
 
@@ -285,29 +291,20 @@ void MagicCube::generateCube()
 
 void MagicCube::initializeCamera()
 {
-	glm::vec3 targetPos = glm::vec3(CUBEXROWS * CUBEMARGIN/2.0,CUBEYROWS * CUBEMARGIN/2.0,CUBEZROWS * CUBEMARGIN/2.0);
+	glm::vec3 cameraPos = glm::vec3(0,CUBEMARGIN * CUBEYROWS / 2, 0);
 
-	glm::vec3 cameraPos = glm::vec3(
-		4 + targetPos.x * 1.5,
-		5 + targetPos.y * 3,
-	    4 + targetPos.z * 1.5
-		);
-
-	glm::vec3 up = glm::vec3(0.0,1.0,0.0);
-
-	mCamera->resetCamera(cameraPos,targetPos,up);
-
+	mCamera->setCameraPosition(cameraPos);
 }
 
 void MagicCube::screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int screenHeight,
 		glm::mat4 viewMatrix,glm::mat4 projMatrix,glm::vec3& out_origin,glm::vec3& out_direction)
 {
-	glm::vec4 lRayStart_NDC( 
-		(mouseX/(float)screenWidth - 0.5f) * 2.0,
-		(mouseY/(float)screenHeight - 0.5f) * 2.0,
-		-1.0,
-		1.0f
-		);
+	//glm::vec4 lRayStart_NDC( 
+	//	(mouseX/(float)screenWidth - 0.5f) * 2.0,
+	//	(mouseY/(float)screenHeight - 0.5f) * 2.0,
+	//	-1.0,
+	//	1.0f
+	//	);
 
 	glm::vec4 lRayEnd_NDC(
 		(mouseX/(float)screenWidth - 0.5f) * 2.0,
@@ -316,13 +313,14 @@ void MagicCube::screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int sc
 		1.0f
 		);
 
+	glm::vec4 lRayStart_NDC(mCamera->getPos(),1.0f);
+
 	glm::mat4 inverseProjMatrix = glm::inverse(projMatrix);
 	glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
 
-	glm::vec4 lRayStart_Camera = inverseProjMatrix * lRayStart_NDC; lRayStart_Camera /= lRayStart_Camera.w;
-	glm::vec4 lRayStart_World  = inverseViewMatrix * lRayStart_Camera; lRayStart_World /= lRayStart_World.w;
-	glm::vec4 lRayEnd_Camera   = inverseProjMatrix * lRayEnd_NDC; lRayEnd_Camera /= lRayEnd_Camera.w;
-	glm::vec4 lRayEnd_World    = inverseViewMatrix * lRayEnd_Camera; lRayEnd_World /= lRayEnd_World.w;
+	glm::vec4 lRayStart_World	   = lRayStart_NDC; 
+	glm::vec4 lRayEnd_View   = inverseProjMatrix * lRayEnd_NDC; lRayEnd_View /= lRayEnd_View.w;
+	glm::vec4 lRayEnd_World  = inverseViewMatrix * lRayEnd_View; lRayEnd_World /= lRayEnd_World.w;
 
 	glm::vec3 lRayDirection_World(lRayEnd_World - lRayStart_World);
 	lRayDirection_World = glm::normalize(lRayDirection_World);

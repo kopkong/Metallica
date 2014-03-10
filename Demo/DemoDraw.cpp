@@ -6,7 +6,7 @@ DemoDraw::DemoDraw(int width,int height)
 	mWindowWidth = width;
 	mWindowHeight = height;
 	mDataMgr = new DataHelper();
-	mSceneCamera = new Camera(mWindowWidth,mWindowHeight);
+	mSceneCamera = new Camera(mWindowWidth,mWindowHeight,mSDLMainWindow);
 	mTerrainRender = new TerrainRender(mSceneCamera);
 	mMagicCube = new MagicCube(mSceneCamera);
 	mModelRender = new ModelRender(mSceneCamera,"../external/assimp--3.0.1270-sdk/test/models/OBJ/", "spider.obj");
@@ -177,7 +177,7 @@ void DemoDraw::mouseButtonDownHandler(SDL_MouseButtonEvent button)
 
 void DemoDraw::mouseMotionHandler(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	//mSceneCamera->onMouseMotion(button,motion);
+	mSceneCamera->onMouseMotion(button,motion);
 }
 
 void DemoDraw::mouseWheelHandler(SDL_MouseWheelEvent wheel)

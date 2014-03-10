@@ -7,14 +7,19 @@ const static int MARGIN = 10;
 const glm::vec3 YAXIS = glm::vec3(0.0,1.0,0.0);
 const glm::vec3 XAXIS = glm::vec3(1.0,0.0,0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0,0.0,1.0);
+const float MoveSpeed = 0.5;
+const float MouseSpeed = 0.005f;
+const float EyesSight = 10.0f;
 
-Camera::Camera(int WindowWidth, int WindowHeight)
+Camera::Camera(int WindowWidth, int WindowHeight,SDL_Window * window)
 {
-    mWindowWidth  = WindowWidth;
-    mWindowHeight = WindowHeight;
-    mPos          = glm::vec3(1.0f, -2.0f, -5.0f);
-    mTarget       = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::normalize(mTarget);
+    mWindowWidth		= WindowWidth;
+    mWindowHeight		= WindowHeight;
+	mSDLMainWindow     = window;
+
+    mPos						 = glm::vec3(0.0f, 10.0f, -10.0f);
+    mLookDirection			 = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::normalize(mLookDirection);
     mUp           = glm::vec3(0.0f, 1.0f, 0.0f);
 
     mModel   = glm::mat4(1.0f);
@@ -29,11 +34,11 @@ void Camera::init()
    
 }
 
-void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const glm::vec3& Up)
+void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& direction, const glm::vec3& Up)
 {
 	mPos = Pos;
-    mTarget = Target;
-	glm::normalize(mTarget);
+    mLookDirection = direction;
+	glm::normalize(direction);
 
     mUp = Up;
     glm::normalize(mUp);
@@ -42,17 +47,47 @@ void Camera::resetCamera(const glm::vec3& Pos, const glm::vec3& Target, const gl
 
 void Camera::onKeyboard(SDL_Keycode Key)
 {
-	glm::vec3 direction = normalize(mPos-mTarget);
-	glm::vec3 right = cross(direction,mUp);
-
+	// move the camera
+	// w,s,a,d or
+	// Up Down Left Right
 	switch(Key)
 	{
+	case SDLK_UP:
+		forward();
+		break;
 	case SDLK_LEFT:
-		mPos -= right;
+		left();
 		break;
 	case SDLK_RIGHT:
-		mPos += right;
+		right();
 		break;
+	case SDLK_DOWN:
+		backward();
+		break;
+	case SDLK_w:
+		forward();
+		break;
+	case SDLK_s:
+		backward();
+		break;
+	case SDLK_a:
+		left();
+		break;
+	case SDLK_d:
+		right();
+		break;
+
+	// Camera control
+	case SDLK_HOME:
+		resetCameraDirection();
+		break;
+	case SDLK_PAGEUP:
+		headup();
+		break;
+	case SDLK_PAGEDOWN:
+		headdown();
+		break;
+
 	default:break;
 	}
 
@@ -65,37 +100,44 @@ void Camera::onMouseDown(SDL_MouseButtonEvent button)
 
 void Camera::onMouseUp(SDL_MouseButtonEvent button)
 {
-	//mMousePos.x = 0;
-	//mMousePos.y = 0;
+	mMousePos.x = 0;
+	mMousePos.y = 0;
 }
 
 void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	//SDL_Log("Mouse index : %d",button.button);
-	//SDL_Log("Mouse state: %d",button.state);
-	//SDL_Log("Motion state: %d",motion.state);
-	/*if(motion.state == SDL_BUTTON_MMASK)
+	if(motion.state == SDL_BUTTON_RMASK)
 	{
 		if(mMousePos.x == 0 && mMousePos.y == 0)
 		{
 			mMousePos.x = button.x;
 			mMousePos.y = button.y;
 		}
-		else
-		{
-			int deltaX = button.x - mMousePos.x;
-			int deltaY = button.y - mMousePos.y;
 
-			float hAngle = deltaY > 0 ? -1.0f: 1.0f;
-			float vAngle = deltaX > 0 ? 1.0f: -1.0f;
+		// reset mouse position
+		//SDL_WarpMouseInWindow(mSDLMainWindow,1024/2,768/2);
 
-		}
+		mHorizontalAngle += MouseSpeed * float(mMousePos.x - button.x);
+		mVerticalAngle += MouseSpeed * float(mMousePos.y -button.y);
+
+		glm::vec3 direction(
+			cos(mVerticalAngle) * sin(mHorizontalAngle),
+			sin(mVerticalAngle),
+			cos(mVerticalAngle) * cos(mVerticalAngle)
+			);
+
+		glm::vec3 right(
+			sin(mHorizontalAngle - 3.14f/2.0f),
+			0,
+			cos(mHorizontalAngle - 3.14f/2.0f)
+			);
+
+		mLookDirection = glm::normalize(direction);
+		mUp = glm::normalize(glm::cross(right,direction));
 	}
-	else
-	{
-		mMousePos.x = 0;
-		mMousePos.y = 0;
-	}*/
+
+	mMousePos.x = button.x;
+	mMousePos.y = button.y;
 }
 
 void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)
@@ -108,14 +150,52 @@ void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)
 
 void Camera::zoomIn()
 {
-	glm::vec3 direction = normalize(mPos - mTarget);
-	mPos -= direction * STEP_SCALE;
+	//glm::vec3 direction = normalize(mPos - mTarget);
+	//mPos -= direction * STEP_SCALE;
 }
 
 void Camera::zoomOut()
 {
-	glm::vec3 direction = normalize(mPos - mTarget);
-	mPos += direction * STEP_SCALE;
+	//glm::vec3 direction = normalize(mPos - mTarget);
+	//mPos += direction * STEP_SCALE;
+}
+
+void Camera::forward()
+{
+	mPos += MoveSpeed * mLookDirection;
+}
+
+void Camera::backward()
+{
+	mPos -= MoveSpeed* mLookDirection;
+}
+
+void Camera::left()
+{
+	glm::vec3 right = cross(mLookDirection,mUp);
+	mPos -= MoveSpeed * right;
+}
+
+void Camera::right()
+{
+	glm::vec3 right = cross(mLookDirection,mUp);
+	mPos += MoveSpeed * right;
+}
+
+void Camera::headup()
+{
+	mVerticalAngle += 0.1f;
+}
+
+void Camera::headdown()
+{
+	mVerticalAngle -= 0.1f;
+}
+
+void Camera::resetCameraDirection()
+{
+	// reset direction to Z+
+	mLookDirection = glm::vec3(0.0,0.0,1.0);
 }
 
 void Camera::initProjection()
@@ -125,7 +205,8 @@ void Camera::initProjection()
 
 void Camera::initView()
 {
-	mView = glm::lookAt(mPos,mTarget,mUp);
+	glm::vec3 targetPos = mPos + mLookDirection;
+	mView = glm::lookAt(mPos,targetPos,mUp);
 }
 
 void Camera::setModel(glm::mat4 model)

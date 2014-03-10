@@ -12,11 +12,9 @@ class Camera
 {
 public:
 
-    Camera(int WindowWidth, int WindowHeight);
+    Camera(int WindowWidth, int WindowHeight,SDL_Window *window);
 
-    Camera(int WindowWidth, int WindowHeight, const glm::vec3& Pos, const glm::vec3& Target, const glm::vec3& Up);
-
-	void resetCamera(const glm::vec3& pos,const glm::vec3& Target, const glm::vec3& Up);
+	void resetCamera(const glm::vec3& pos,const glm::vec3& direction, const glm::vec3& Up);
 
 	glm::mat4 getMVP();
 	glm::mat4 getView();
@@ -34,19 +32,18 @@ public:
         return mPos;
     }
 
-    const glm::vec3& getTarget() const
-    {
-        return mTarget;
-    }
+	const glm::vec3& getLookatDirection() const
+	{
+		return mLookDirection;
+	}
 
-    const glm::vec3& getUp() const
-    {
-        return mUp;
-    }
+	void setCameraPosition(const glm::vec3& pos)
+	{
+		mPos = pos;
+	}
 
 private:
     void init();
-		
 	void initProjection();
 	void initView();
 	void zoomIn(); // move close
@@ -54,15 +51,23 @@ private:
 	void rotateModelbyX();
 	void rotateModelbyY();
 	void rotateModelbyZ();
+	void forward();
+	void left();
+	void right();
+	void backward();
+	void resetCameraDirection();
+	void headup();
+	void headdown();
 
     glm::vec3 mPos;
-    glm::vec3 mTarget;
+    glm::vec3 mLookDirection;
     glm::vec3 mUp;
 
 	glm::mat4 mProjection;
 	glm::mat4 mView;
 	glm::mat4 mModel;
 
+	SDL_Window *mSDLMainWindow;
     int mWindowWidth;
     int mWindowHeight;
 
