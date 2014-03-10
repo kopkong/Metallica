@@ -8,8 +8,7 @@ const glm::vec3 YAXIS = glm::vec3(0.0,1.0,0.0);
 const glm::vec3 XAXIS = glm::vec3(1.0,0.0,0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0,0.0,1.0);
 const float MoveSpeed = 0.5;
-const float MouseSpeed = 0.005f;
-const float EyesSight = 10.0f;
+const float MouseSpeed = 0.0005f;
 
 Camera::Camera(int WindowWidth, int WindowHeight,SDL_Window * window)
 {
@@ -106,7 +105,7 @@ void Camera::onMouseUp(SDL_MouseButtonEvent button)
 
 void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
 {
-	if(motion.state == SDL_BUTTON_RMASK)
+	//if(motion.state == SDL_BUTTON_RMASK)
 	{
 		if(mMousePos.x == 0 && mMousePos.y == 0)
 		{
@@ -114,26 +113,10 @@ void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent moti
 			mMousePos.y = button.y;
 		}
 
-		// reset mouse position
-		//SDL_WarpMouseInWindow(mSDLMainWindow,1024/2,768/2);
+		float horizontalDistance = MouseSpeed * float(mMousePos.x - button.x);
+		float verticalDistance = MouseSpeed * float(mMousePos.y -button.y);
 
-		mHorizontalAngle += MouseSpeed * float(mMousePos.x - button.x);
-		mVerticalAngle += MouseSpeed * float(mMousePos.y -button.y);
-
-		glm::vec3 direction(
-			cos(mVerticalAngle) * sin(mHorizontalAngle),
-			sin(mVerticalAngle),
-			cos(mVerticalAngle) * cos(mVerticalAngle)
-			);
-
-		glm::vec3 right(
-			sin(mHorizontalAngle - 3.14f/2.0f),
-			0,
-			cos(mHorizontalAngle - 3.14f/2.0f)
-			);
-
-		mLookDirection = glm::normalize(direction);
-		mUp = glm::normalize(glm::cross(right,direction));
+		mLookDirection += glm::vec3(horizontalDistance,verticalDistance,0);
 	}
 
 	mMousePos.x = button.x;

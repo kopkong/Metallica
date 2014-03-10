@@ -9,6 +9,22 @@
 #define CUBEZROWS 4
 #define CUBEYROWS 4
 
+struct MotionCube
+{
+	MotionCube(glm::vec3 pos, glm::vec3 dir, float v, float t)
+	{
+		StartPos = pos;
+		MoveDirection = dir;
+		Speed = v;
+		ElapsedTime = t;
+	};
+
+	glm::vec3 StartPos;
+	glm::vec3 MoveDirection;
+	float Speed;
+	float ElapsedTime;
+};
+
 class MagicCube
 {
 public:
@@ -38,7 +54,7 @@ private:
 	GLuint mTextureInstanceOffsetBuffer;
 
 	vector<vertex_v3fv2f> mVertexData;
-	vector<glm::vec3> mInstancedOffsetData;
+	vector<MotionCube> mMotionCubes;
 	vector<glm::mat4> mModelCoordinateData;
 	unsigned int mInstanceCount;
 	unsigned int mVertexCount;
@@ -60,6 +76,8 @@ private:
 		glm::mat4 viewMatrix,glm::mat4 projMatrix,glm::vec3& out_origin,glm::vec3& out_direction);
 	bool testRayOBBIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction,glm::vec3 aabb_min,
 		glm::vec3 aabb_max, glm::mat4 modelMatrix,float& intersectionDistance);
+
+	void renderRollingCube();
 	void renderRayTest();
 	void renderCube();
 };

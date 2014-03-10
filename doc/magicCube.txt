@@ -8,7 +8,6 @@ MagicCube.
 6. Instanced drawing.
 7. Generate mipmap.
 8. Rotate single cube.
-
-Ex
-1. Picking.
-2. Control the rotatation.
+9. Camera can look&rotate to up/down.
+10. Camera can look&rotate to left/right.
+11. Draw a cube from camera position to look at direction.

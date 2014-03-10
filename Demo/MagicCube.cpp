@@ -3,6 +3,8 @@
 #include <gtc/matrix_transform.hpp>
 
 const float CUBEMARGIN = 3.5f;
+const float EyesSight = 100.0f;
+const float LaunchSpeed = 1.0f;
 
 MagicCube::MagicCube(Camera* pCamera)
 {
@@ -70,9 +72,9 @@ void MagicCube::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	renderCube();
+	//renderCube();
 
-	//renderRayTest();
+	renderRollingCube();
 }
 
 void MagicCube::renderCube()
@@ -125,6 +127,50 @@ void MagicCube::renderCube()
 	checkError("cube render");
 }
 
+void MagicCube::renderRollingCube()
+{
+	glUseProgram(mProgCubeRendering);
+
+	// Bind Vertex
+	glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(vertex_v3fv2f),0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,sizeof(vertex_v3fv2f),(const GLvoid*)sizeof(glm::vec3));
+
+	// Bind Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,mTextureCubeFace);
+	glUniform1i(mUniformCubeTexture,0);
+
+	// Cull face
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	// Depth test
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	for(unsigned int i = 0 ; i < mInstanceCount ; i++)
+	{
+		rotateModel(mModelCoordinateData[i]);
+		mCamera->setModel(mModelCoordinateData[i]);
+
+		glm::mat4 mvp = mCamera->getMVP();
+
+		glUniformMatrix4fv(mUniformMVP,1,GL_FALSE,&mvp[0][0]);
+
+		glDrawArrays(GL_TRIANGLES,0,mVertexCount);
+	}
+
+	// Disable attrib pointer
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+
+	checkError("cube render");
+}
+
 void MagicCube::renderRayTest()
 {
 	glUseProgram(mProgRayTest);
@@ -137,13 +183,11 @@ void MagicCube::renderRayTest()
 	glGenBuffers(1,&rayVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER,rayVertexBuffer);
 
-	glm::vec3 rayStart = mRayOrigin ;//+ 5.0f * mRayDirection;
-	//glm::vec3 rayEnd   = mRayOrigin + 30.0f * mRayDirection;
-	glm::vec3 rayEnd = glm::vec3(0.0,0.0,0.0);
-
 	glm::vec3 ray[2] = {
-		rayStart,
-		rayEnd 
+		mCamera->getPos(),
+		mCamera->getLookatDirection() * EyesSight
+		//rayStart,
+		//rayEnd 
 	};
 	glBufferData(GL_ARRAY_BUFFER,sizeof(glm::vec3) * 2,&ray[0],GL_STATIC_DRAW);
 
@@ -160,10 +204,10 @@ void MagicCube::renderRayTest()
 	glPointSize(10.0);
 	glLineWidth(2.0);
 	
-	// draw origin
-	glDrawArrays(GL_POINTS,0,1);
+	// draw end
+	glDrawArrays(GL_POINTS,1,1);
 
-	// draw direction
+	// draw ray
 	glDrawArrays(GL_LINES,0,2);
 
 	glDisableVertexAttribArray(0);
@@ -171,43 +215,46 @@ void MagicCube::renderRayTest()
 
 void MagicCube::update()
 {
+	// Update the rolling cube's position
+	mInstanceCount = mModelCoordinateData.size();
+
 	// Picking cube
-	if(mIsPicking && (mMousePos.x > 0 && mMousePos.y > 0))
-	{
-		//SDL_Log("Picking .. MousePosition is (%d,%d)",mMousePos.x, mMousePos.y);
-		glm::mat4 viewMatrix = mCamera->getView();
-		glm::mat4 projMatrix = mCamera->getProjection();
-		glm::vec3 ray_Origin;
-		glm::vec3 ray_Direction;
-		screenPosToWorldRay(
-			mMousePos.x / 2 , mMousePos.y / 2,
-			mScreenSize.x, mScreenSize.y,
-			viewMatrix,
-			projMatrix,
-			ray_Origin,
-			ray_Direction
-			);
-		mRayOrigin = ray_Origin;
-		mRayDirection = ray_Direction;
+	//if(mIsPicking && (mMousePos.x > 0 && mMousePos.y > 0))
+	//{
+	//	//SDL_Log("Picking .. MousePosition is (%d,%d)",mMousePos.x, mMousePos.y);
+	//	glm::mat4 viewMatrix = mCamera->getView();
+	//	glm::mat4 projMatrix = mCamera->getProjection();
+	//	glm::vec3 ray_Origin;
+	//	glm::vec3 ray_Direction;
+	//	screenPosToWorldRay(
+	//		mMousePos.x / 2 , mMousePos.y / 2,
+	//		mScreenSize.x, mScreenSize.y,
+	//		viewMatrix,
+	//		projMatrix,
+	//		ray_Origin,
+	//		ray_Direction
+	//		);
+	//	mRayOrigin = ray_Origin;
+	//	mRayDirection = ray_Direction;
 
-		float intersectionDistance; // Output of TestRayOBBIntersection()
-		glm::vec3 aabb_min(-1.0f, -1.0f, -1.0f);
-		glm::vec3 aabb_max( 1.0f,  1.0f,  1.0f);
+	//	float intersectionDistance; // Output of TestRayOBBIntersection()
+	//	glm::vec3 aabb_min(-1.0f, -1.0f, -1.0f);
+	//	glm::vec3 aabb_max( 1.0f,  1.0f,  1.0f);
 
-		for(unsigned i = 0 ; i < mInstanceCount ; i++)
-		{
-			if(testRayOBBIntersection(ray_Origin,ray_Direction,aabb_min,aabb_max,
-				mModelCoordinateData[i],intersectionDistance))
-			{
-				mSelectedInstance = i;
-				SDL_Log("The %d Cube is selected ",mSelectedInstance);
-			}
-		}
+	//	for(unsigned i = 0 ; i < mInstanceCount ; i++)
+	//	{
+	//		if(testRayOBBIntersection(ray_Origin,ray_Direction,aabb_min,aabb_max,
+	//			mModelCoordinateData[i],intersectionDistance))
+	//		{
+	//			mSelectedInstance = i;
+	//			SDL_Log("The %d Cube is selected ",mSelectedInstance);
+	//		}
+	//	}
 
-		//remove picking state
-		SDL_Log("No cube is selected");
-		mIsPicking = false;
-	}
+	//	//remove picking state
+	//	SDL_Log("No cube is selected");
+	//	mIsPicking = false;
+	//}
 }
 
 void MagicCube::exit()
@@ -270,28 +317,11 @@ void MagicCube::generateCube()
 
 	mVertexCount = mVertexData.size();
 
-	// Generate instanced offset
-	for(int y = 0 ; y < CUBEYROWS; y ++)
-	{
-		for(int z = 0 ; z <CUBEZROWS; z ++)
-		{
-			for(int x = 0; x < CUBEXROWS; x++)
-			{
-				glm::vec3 offset = glm::vec3(x*CUBEMARGIN,y*CUBEMARGIN,z*CUBEMARGIN);
-				glm::mat4 model = glm::mat4(1.0);
-				model = glm::gtc::matrix_transform::translate(model,offset);
-
-				mModelCoordinateData.push_back(model);
-			}
-		}
-	}
-
-	mInstanceCount = mModelCoordinateData.size();
 }
 
 void MagicCube::initializeCamera()
 {
-	glm::vec3 cameraPos = glm::vec3(0,CUBEMARGIN * CUBEYROWS / 2, 0);
+	glm::vec3 cameraPos = glm::vec3(CUBEMARGIN * CUBEXROWS / 2,CUBEMARGIN * CUBEYROWS / 2, -30);
 
 	mCamera->setCameraPosition(cameraPos);
 }
@@ -462,10 +492,8 @@ void MagicCube::onMouseDown(SDL_MouseButtonEvent button)
 {
 	if(button.button == SDL_BUTTON_LEFT && button.state== SDL_PRESSED)
 	{
-		mIsPicking = true;
-		mMousePos.x = button.x;
-		mMousePos.y = button.y;
-
-		//SDL_Log("Mouse posistion is (%d,%d)",button.x,button.y);
+		// Launch a cube
+		MotionCube cube(mCamera->getPos(),mCamera->getLookatDirection(),LaunchSpeed,0.0f);
+		mMotionCubes.push_back(cube);
 	}
 }
