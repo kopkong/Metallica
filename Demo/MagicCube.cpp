@@ -16,8 +16,7 @@ MagicCube::MagicCube(Camera* pCamera)
 	mScreenSize = glm::ivec2(WINDOW_WIDTH,WINDOW_HEIGHT);
 	mSelectedInstance = -1; // unselected
 	mIsPicking = false;
-	//mRayOrigin = glm::vec3(0,0,0);
-	//mRayDirection = glm::vec3(1,100,10);
+	mSkyBoxCoordinateData = glm::mat4(1.0);
 }
 
 MagicCube::~MagicCube(void)
@@ -39,15 +38,23 @@ void MagicCube::init()
 	compileShaderFromFile("../data/shader/raytest.vertexshader",GL_VERTEX_SHADER,mProgRayTest);
 	compileShaderFromFile("../data/shader/raytest.fragmentshader",GL_FRAGMENT_SHADER,mProgRayTest);
 
+	mProgSkyBox = glCreateProgram();
+	compileShaderFromFile("../data/shader/skybox.vert",GL_VERTEX_SHADER,mProgSkyBox);
+	compileShaderFromFile("../data/shader/skybox.frag",GL_FRAGMENT_SHADER,mProgSkyBox);
+
+
 	// Find uniform location
 	mUniformMVP = glGetUniformLocation(mProgCubeRendering,"MVP");
 	mUniformCubeTexture = glGetUniformLocation(mProgCubeRendering,"Sampler2D");
 	mUniformRayTestMVP = glGetUniformLocation(mProgRayTest,"MVP");
-	//mUniformTextureBufferOffset = glGetUniformLocation(mProgCubeRendering,"InstancedOffset");
+	mUniformCameraPosition = glGetUniformLocation(mProgSkyBox,"CameraPosition");
+	mUniformViewProjectMatrix = glGetUniformLocation(mProgSkyBox,"ViewProjectionMatrix");
+	mUniformSkyBoxTexture = glGetUniformLocation(mProgSkyBox,"CubeMap");
 
 	// Load Textures
 	mTextureCubeFace = loadTexture2D(L"../data/cubemagic/cube.DDS");
 	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,0);
 
 	// Load Cube map
 	wchar_t const* cubemaps[6] = {
@@ -82,9 +89,39 @@ void MagicCube::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	//renderCube();
+	renderSkyBox();
 
 	renderRollingCube();
+}
+
+void MagicCube::renderSkyBox()
+{
+	glUseProgram(mProgSkyBox);
+
+	// Bind vertex
+	glBindBuffer(GL_ARRAY_BUFFER,mVertexBuffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(vertex_v3fv2f),0);
+
+	// Bind Texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,mCubeMapSkyBox);
+	glUniform1i(mUniformSkyBoxTexture,0);
+	
+	// Translate the skybox to the camera position
+	mCamera->setModel(mSkyBoxCoordinateData);
+	glm::mat4 mvp = mCamera->getMVP();
+
+	glUniform3fv(mUniformCameraPosition,1,&mCamera->getPos()[0]);
+	glUniformMatrix4fv(mUniformViewProjectMatrix,1,GL_FALSE,&mvp[0][0]);
+
+	glDrawArrays(GL_TRIANGLES,0,mVertexCount);
+
+	glDisableVertexAttribArray(0);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP,0);
+	//glUseProgram(0);
+
+	checkError("skybox render");
 }
 
 void MagicCube::renderCube()
@@ -154,9 +191,9 @@ void MagicCube::renderRollingCube()
 	glUniform1i(mUniformCubeTexture,0);
 
 	// Cull face
-	glFrontFace(GL_CCW);
+	/*glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	glCullFace(GL_BACK);*/
 
 	// Depth test
 	glEnable(GL_DEPTH_TEST);
@@ -173,6 +210,8 @@ void MagicCube::renderRollingCube()
 
 		glDrawArrays(GL_TRIANGLES,0,mVertexCount);
 	}
+
+	glDisable(GL_DEPTH_TEST);
 
 	// Disable attrib pointer
 	glDisableVertexAttribArray(0);
@@ -225,10 +264,13 @@ void MagicCube::renderRayTest()
 
 void MagicCube::update()
 {
+	// Update skybox coordinate
+	mSkyBoxCoordinateData = glm::translate(glm::mat4(1.0),mCamera->getPos());
+
 	mModelCoordinateData.clear();
 
 	// Update the rolling cube's position
-	for(int i=0; i< mMotionCubes.size(); i ++ )
+	for(unsigned int i=0; i< mMotionCubes.size(); i ++ )
 	{
 		// If render time is more than 1000 frames, than ignore the cube.
 		if(mMotionCubes[i].ElapsedTime > 1000)
@@ -345,7 +387,6 @@ void MagicCube::generateCube()
 	mVertexData.push_back(vertex_v3fv2f(glm::vec3( 1.0f,-1.0f, 1.0),glm::vec2(0.667979f, 1.0f-0.33585)));
 
 	mVertexCount = mVertexData.size();
-
 }
 
 void MagicCube::initializeCamera()

@@ -113,5 +113,11 @@
     <None Include="..\data\shader\raytest.vertexshader">
       <Filter>shader</Filter>
     </None>
+    <None Include="..\data\shader\skybox.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\skybox.vert">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -108,6 +108,8 @@
     <None Include="..\data\shader\model.vs" />
     <None Include="..\data\shader\raytest.fragmentshader" />
     <None Include="..\data\shader\raytest.vertexshader" />
+    <None Include="..\data\shader\skybox.frag" />
+    <None Include="..\data\shader\skybox.vert" />
     <None Include="..\data\shader\terrain_fs.glsl" />
     <None Include="..\data\shader\terrain_vs.glsl" />
     <None Include="engine.inl" />

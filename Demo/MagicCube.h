@@ -46,12 +46,13 @@ private:
 	GLuint mProgRayTest;
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
-	GLuint mUniformSkyTexture;
-	GLuint mUniformTextureBufferOffset;
+	GLuint mUniformSkyBoxTexture;
 	GLuint mUniformRayTestMVP;
+	GLuint mUniformCameraPosition;
+	GLuint mUniformViewProjectMatrix;
 
 	GLuint mVertexBuffer;
-	GLuint mInstancedVertexOffsetBuffer;
+	GLuint mVertexSkyBox;
 	GLuint mTextureCubeFace;
 	GLuint mTextureInstanceOffsetBuffer;
 	GLuint mCubeMapSkyBox;
@@ -59,6 +60,7 @@ private:
 	vector<vertex_v3fv2f> mVertexData;
 	vector<MotionCube> mMotionCubes;
 	vector<glm::mat4> mModelCoordinateData;
+	glm::mat4 mSkyBoxCoordinateData;
 	unsigned int mInstanceCount;
 	unsigned int mVertexCount;
 	int mSelectedInstance;
@@ -83,5 +85,6 @@ private:
 	void renderRollingCube();
 	void renderRayTest();
 	void renderCube();
+	void renderSkyBox();
 };
 

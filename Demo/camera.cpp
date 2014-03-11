@@ -8,7 +8,7 @@ const glm::vec3 YAXIS = glm::vec3(0.0,1.0,0.0);
 const glm::vec3 XAXIS = glm::vec3(1.0,0.0,0.0);
 const glm::vec3 ZAXIS = glm::vec3(0.0,0.0,1.0);
 const float MoveSpeed = 0.5;
-const float MouseSpeed = 0.0005f;
+const float MouseSpeed = 0.0008f;
 
 Camera::Camera(int WindowWidth, int WindowHeight,SDL_Window * window)
 {
