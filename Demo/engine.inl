@@ -276,6 +276,16 @@ inline void compileShaderFromFile(const char* shader_file_path, GLuint shaderTyp
 				ShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 				break;
 			}
+		case GL_TESS_CONTROL_SHADER:
+			{
+				ShaderID = glCreateShader(GL_TESS_CONTROL_SHADER);
+				break;
+			}
+		case GL_TESS_EVALUATION_SHADER:
+			{
+				ShaderID = glCreateShader(GL_TESS_EVALUATION_SHADER);
+				break;
+			}
 	}
 
 	// Read the Shader code from the file

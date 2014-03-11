@@ -25,6 +25,25 @@ struct MotionCube
 	float ElapsedTime;
 };
 
+typedef struct{
+	GLuint Projection;
+	GLuint ModelView;
+	GLuint NormalMatrix;
+	GLuint LightPosition;
+	GLuint AmbientMaterial;
+	GLuint DiffuseMaterial;
+	GLuint TessLevelInner;
+	GLuint TessLevelOuter;
+} TessSphereShaderUniforms;
+
+typedef struct{
+	GLuint ProgramId;
+	TessSphereShaderUniforms UniformLocations;
+	GLuint VAO;
+	GLuint VertexBuffer;
+	GLuint ElementBuffer;
+} TessSphereShaderProgram;
+
 class MagicCube
 {
 public:
@@ -41,6 +60,8 @@ public:
 	void onMouseDown(SDL_MouseButtonEvent);
 
 private:
+	TessSphereShaderProgram mTessSphereProg;
+
 	GLuint mProgCubeRendering;
 	GLuint mProgSkyBox;
 	GLuint mProgRayTest;
@@ -85,6 +106,7 @@ private:
 	void renderRollingCube();
 	void renderRayTest();
 	void renderCube();
+	void renderSphere();
 	void renderSkyBox();
 };
 

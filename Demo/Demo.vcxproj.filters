@@ -119,5 +119,20 @@
     <None Include="..\data\shader\skybox.vert">
       <Filter>shader</Filter>
     </None>
+    <None Include="..\data\shader\tess.con">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\tess.eva">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\tess.frag">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\tess.gemo">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="..\data\shader\tess.vert">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

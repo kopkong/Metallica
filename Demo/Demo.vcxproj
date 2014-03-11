@@ -112,6 +112,11 @@
     <None Include="..\data\shader\skybox.vert" />
     <None Include="..\data\shader\terrain_fs.glsl" />
     <None Include="..\data\shader\terrain_vs.glsl" />
+    <None Include="..\data\shader\tess.con" />
+    <None Include="..\data\shader\tess.eva" />
+    <None Include="..\data\shader\tess.frag" />
+    <None Include="..\data\shader\tess.gemo" />
+    <None Include="..\data\shader\tess.vert" />
     <None Include="engine.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

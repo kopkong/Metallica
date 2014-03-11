@@ -5,6 +5,8 @@
 const float CUBEMARGIN = 3.5f;
 const float EyesSight = 100.0f;
 const float LaunchSpeed = 1.0f;
+const float TessLevelInner = 3.0f;
+const float TessLevelOuter = 2.0f;
 
 MagicCube::MagicCube(Camera* pCamera)
 {
@@ -42,6 +44,12 @@ void MagicCube::init()
 	compileShaderFromFile("../data/shader/skybox.vert",GL_VERTEX_SHADER,mProgSkyBox);
 	compileShaderFromFile("../data/shader/skybox.frag",GL_FRAGMENT_SHADER,mProgSkyBox);
 
+	mTessSphereProg.ProgramId = glCreateProgram();
+	compileShaderFromFile("../data/shader/tess.vert",GL_VERTEX_SHADER,mTessSphereProg.ProgramId);
+	compileShaderFromFile("../data/shader/tess.con",GL_TESS_CONTROL_SHADER,mTessSphereProg.ProgramId);
+	compileShaderFromFile("../data/shader/tess.eva",GL_TESS_EVALUATION_SHADER,mTessSphereProg.ProgramId);
+	compileShaderFromFile("../data/shader/tess.gemo",GL_GEOMETRY_SHADER,mTessSphereProg.ProgramId);
+	compileShaderFromFile("../data/shader/tess.frag",GL_FRAGMENT_SHADER,mTessSphereProg.ProgramId);
 
 	// Find uniform location
 	mUniformMVP = glGetUniformLocation(mProgCubeRendering,"MVP");
@@ -50,6 +58,12 @@ void MagicCube::init()
 	mUniformCameraPosition = glGetUniformLocation(mProgSkyBox,"CameraPosition");
 	mUniformViewProjectMatrix = glGetUniformLocation(mProgSkyBox,"ViewProjectionMatrix");
 	mUniformSkyBoxTexture = glGetUniformLocation(mProgSkyBox,"CubeMap");
+
+	mTessSphereProg.UniformLocations.TessLevelInner = glGetUniformLocation(mTessSphereProg.ProgramId,"TessLevelInner");
+	mTessSphereProg.UniformLocations.TessLevelOuter = glGetUniformLocation(mTessSphereProg.ProgramId,"TessLevelOuter");
+	mTessSphereProg.UniformLocations.Projection = glGetUniformLocation(mTessSphereProg.ProgramId,"Projection");
+	mTessSphereProg.UniformLocations.ModelView = glGetUniformLocation(mTessSphereProg.ProgramId,"ModelView");
+	mTessSphereProg.UniformLocations.NormalMatrix = glGetUniformLocation(mTessSphereProg.ProgramId,"NormalMatrix");
 
 	// Load Textures
 	mTextureCubeFace = loadTexture2D(L"../data/cubemagic/cube.DDS");
@@ -72,17 +86,62 @@ void MagicCube::init()
 	glBufferData(GL_ARRAY_BUFFER,mVertexCount * sizeof(vertex_v3fv2f) ,&mVertexData[0],GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
-	// Initiliaz offest buffer
-	//glGenTextures(1,&mInstancedVertexOffsetBuffer);
-	//glBindBuffer(GL_TEXTURE_BUFFER,mInstancedVertexOffsetBuffer);
-	//glBufferData(GL_TEXTURE_BUFFER,mInstanceCount * sizeof(glm::vec3), &mInstancedOffsetData[0],GL_STATIC_DRAW);
-	//glBindBuffer(GL_TEXTURE_BUFFER,0);
+	// Initialize buffer for tess sphere
+	const float Verts[] = 
+	{
+         0.000f,  0.000f,  1.000f,
+         0.894f,  0.000f,  0.447f,
+         0.276f,  0.851f,  0.447f,
+        -0.724f,  0.526f,  0.447f,
+        -0.724f, -0.526f,  0.447f,
+         0.276f, -0.851f,  0.447f,
+         0.724f,  0.526f, -0.447f,
+        -0.276f,  0.851f, -0.447f,
+        -0.894f,  0.000f, -0.447f,
+        -0.276f, -0.851f, -0.447f,
+         0.724f, -0.526f, -0.447f,
+         0.000f,  0.000f, -1.000f
+	};
 
-	// Bind offset buffer to texture buffer object
-	//glGenTextures(1,&mTextureInstanceOffsetBuffer);
-	//glBindTexture(GL_TEXTURE_BUFFER,mTextureInstanceOffsetBuffer);
-	//glTexBuffer(GL_TEXTURE_BUFFER,GL_RGB32F,mInstancedVertexOffsetBuffer);
-	//glBindTexture(GL_TEXTURE_BUFFER,0);
+	const int Faces[] = {
+        2, 1, 0,
+        3, 2, 0,
+        4, 3, 0,
+        5, 4, 0,
+        1, 5, 0,
+
+        11, 6,  7,
+        11, 7,  8,
+        11, 8,  9,
+        11, 9,  10,
+        11, 10, 6,
+
+        1, 2, 6,
+        2, 3, 7,
+        3, 4, 8,
+        4, 5, 9,
+        5, 1, 10,
+
+        2,  7, 6,
+        3,  8, 7,
+        4,  9, 8,
+        5, 10, 9,
+        1, 6, 10 };
+
+	unsigned int indexCount = sizeof(Faces) / sizeof(Faces[0]);
+
+	glGenVertexArrays(1,&mTessSphereProg.VAO);
+	glBindVertexArray(mTessSphereProg.VAO);
+
+	glGenBuffers(1,&mTessSphereProg.VertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER,mTessSphereProg.VertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(Verts),Verts,GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+	glGenBuffers(1,&mTessSphereProg.ElementBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,mTessSphereProg.ElementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(Faces),Faces,GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 void MagicCube::render()
@@ -260,6 +319,11 @@ void MagicCube::renderRayTest()
 	glDrawArrays(GL_LINES,0,2);
 
 	glDisableVertexAttribArray(0);
+}
+
+void MagicCube::renderSphere()
+{
+	glUseProgram(mTessSphereProg.ProgramId);
 }
 
 void MagicCube::update()
