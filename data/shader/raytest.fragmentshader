@@ -1,9 +1,17 @@
 #version 330 core
 
-// Ouput data
-out vec3 color;
+in vec3 vPos;
+
+float rand(vec2 n)
+{
+  return 0.4 + 0.5 * 
+     fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
+}
 
 void main(){
-	color = vec3(1.0,0.0,0.0);
+	float x = rand(vPos.xz);
+	float y = rand(vPos.xy);
+	float z = rand(vPos.yz);
+	gl_FragColor = vec4(x, y, z, 1.0);
 
 }

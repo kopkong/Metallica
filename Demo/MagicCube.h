@@ -9,21 +9,44 @@
 #define CUBEZROWS 4
 #define CUBEYROWS 4
 
+enum CubeMaterial
+{
+	None,
+	Plastic = 1,
+	Wood = 2,
+	Metal = 3
+};
+
 struct MotionCube
 {
-	MotionCube(glm::vec3 pos, glm::vec3 dir, float v, float t)
+	MotionCube(glm::vec3 pos, glm::vec3 dir, float v, float t,CubeMaterial m)
 	{
 		StartPos = pos;
 		MoveDirection = dir;
 		Speed = v;
 		ElapsedTime = t;
+		Material = m;
 	};
 
 	glm::vec3 StartPos;
 	glm::vec3 MoveDirection;
 	float Speed;
 	float ElapsedTime;
+	CubeMaterial Material;
 };
+
+typedef struct{
+	GLuint MVP;
+}TestShaderUniforms;
+
+typedef struct{
+	GLuint ProgramId;
+	TestShaderUniforms UniformLocations;
+	GLuint VAO;
+	GLuint VertexBuffer;
+	GLuint ElementBuffer;
+	unsigned int IndexCount;
+}TestProgram;
 
 typedef struct{
 	GLuint Projection;
@@ -42,7 +65,25 @@ typedef struct{
 	GLuint VAO;
 	GLuint VertexBuffer;
 	GLuint ElementBuffer;
+	unsigned int IndexCount;
 } TessSphereShaderProgram;
+
+typedef struct{
+	GLuint MVP;
+	GLuint Texture;
+} CubeShaderUniforms;
+
+typedef struct{
+	GLuint ProgramId;
+	CubeShaderUniforms UniformLocations;
+	GLuint VAO;
+	GLuint VertexBuffer;
+	GLuint TexturePlastic;
+	GLuint TextureWood;
+	GLuint TextureMetal;
+	unsigned int InstanceCount;
+	unsigned int VertexCount;
+}CubeShaderProgram;
 
 class MagicCube
 {
@@ -61,41 +102,37 @@ public:
 
 private:
 	TessSphereShaderProgram mTessSphereProg;
+	TestProgram mTestProg;
+	CubeShaderProgram mCubeProg;
 
 	GLuint mProgCubeRendering;
 	GLuint mProgSkyBox;
-	GLuint mProgRayTest;
 	GLuint mUniformMVP;
 	GLuint mUniformCubeTexture;
 	GLuint mUniformSkyBoxTexture;
-	GLuint mUniformRayTestMVP;
+
 	GLuint mUniformCameraPosition;
 	GLuint mUniformViewProjectMatrix;
 
 	GLuint mVertexBuffer;
 	GLuint mVertexSkyBox;
 	GLuint mTextureCubeFace;
-	GLuint mTextureInstanceOffsetBuffer;
+
 	GLuint mCubeMapSkyBox;
 
 	vector<vertex_v3fv2f> mVertexData;
 	vector<MotionCube> mMotionCubes;
 	vector<glm::mat4> mModelCoordinateData;
+	vector<CubeMaterial> mModelMaterial;
 	glm::mat4 mSkyBoxCoordinateData;
-	unsigned int mInstanceCount;
-	unsigned int mVertexCount;
+
 	int mSelectedInstance;
 	bool mIsPicking;
 	glm::vec3 mRayOrigin;
 	glm::vec3 mRayDirection;
-
-	bool mKeepRotateX;
-	bool mKeepRotateY;
-	bool mKeepRotateZ;
 	glm::ivec2 mMousePos;
 	glm::ivec2 mScreenSize;
 
-	void rotateModel(glm::mat4 &model);
 	void generateCube();
 	void initializeCamera();
 	void screenPosToWorldRay(int mouseX,int mouseY,int screenWidth,int screenHeight,
@@ -105,7 +142,6 @@ private:
 
 	void renderRollingCube();
 	void renderRayTest();
-	void renderCube();
 	void renderSphere();
 	void renderSkyBox();
 };
