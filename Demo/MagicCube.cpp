@@ -49,6 +49,10 @@ void MagicCube::init()
 	compileShaderFromFile("../data/shader/tess.gemo",GL_GEOMETRY_SHADER,mTessSphereProg.ProgramId);
 	compileShaderFromFile("../data/shader/tess.frag",GL_FRAGMENT_SHADER,mTessSphereProg.ProgramId);
 
+	mCrossHairProg.ProgramId = glCreateProgram();
+	compileShaderFromFile("../data/shader/crosshair.vert",GL_VERTEX_SHADER,mCrossHairProg.ProgramId);
+	compileShaderFromFile("../data/shader/crosshair.frag",GL_FRAGMENT_SHADER,mCrossHairProg.ProgramId);
+
 	// Find uniform location
 	{
 		mCubeProg.UniformLocations.MVP = glGetUniformLocation(mCubeProg.ProgramId,"MVP");
@@ -65,6 +69,8 @@ void MagicCube::init()
 		mTessSphereProg.UniformLocations.Projection = glGetUniformLocation(mTessSphereProg.ProgramId,"Projection");
 		mTessSphereProg.UniformLocations.ModelView = glGetUniformLocation(mTessSphereProg.ProgramId,"ModelView");
 		mTessSphereProg.UniformLocations.NormalMatrix = glGetUniformLocation(mTessSphereProg.ProgramId,"NormalMatrix");
+
+		mCrossHairProg.UniformLocations.Color = glGetUniformLocation(mCrossHairProg.ProgramId,"CrossHairColor");
 	}
 
 	// Load Textures
@@ -184,6 +190,31 @@ void MagicCube::init()
 
 		glBindVertexArray(0);
 	}
+
+	// Corss Hair
+	{
+		float rangeX = 50.0f / mScreenSize.x;
+		float rangeY = 50.0f / mScreenSize.y;
+		float crossHairPos[8] = 
+		{
+			rangeX,0.0,
+			-rangeX,0.0,
+			0.0,rangeY,
+			0.0,-rangeY
+		};
+
+		glGenVertexArrays(1,&mCrossHairProg.VAO);
+		glBindVertexArray(mCrossHairProg.VAO);
+
+		glGenBuffers(1,&mCrossHairProg.VertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER,mCrossHairProg.VertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER,sizeof(crossHairPos),crossHairPos,GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		glBindVertexArray(0);
+
+		mCrossHairProg.VertexCount = sizeof(crossHairPos)/ sizeof(glm::vec2);
+		mCrossHairProg.LineSize = 1.0f;
+	}
 }
 
 void MagicCube::render()
@@ -193,6 +224,8 @@ void MagicCube::render()
 	renderSkyBox();
 
 	renderRollingCube();
+
+	renderCrossHair();
 
 	//renderSphere();
 
@@ -331,6 +364,24 @@ void MagicCube::renderSphere()
 	glDisableVertexAttribArray(0);
 
 	checkError("renderSphere");
+}
+
+void MagicCube::renderCrossHair()
+{
+	glUseProgram(mCrossHairProg.ProgramId);
+
+	glm::vec3 color(1.0,0.0,0.0);
+	glUniform3fv(mCrossHairProg.UniformLocations.Color,1,&color[0]);
+
+	glBindVertexArray(mCrossHairProg.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER,mCrossHairProg.VertexBuffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(glm::vec2),0);
+
+	glLineWidth(mCrossHairProg.LineSize);
+	glDrawArrays(GL_LINES,0,mCrossHairProg.VertexCount);
+
+	glDisableVertexAttribArray(0);
 }
 
 void MagicCube::update()

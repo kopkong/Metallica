@@ -50,7 +50,6 @@ bool DemoDraw::init()
 	}
 
 	mSDLMainContext = SDL_GL_CreateContext(mSDLMainWindow);
-	//checkError("Create GL context");
 
 	// init glew
 	if(GLEW_OK != glewInit())
@@ -69,7 +68,12 @@ bool DemoDraw::init()
 	}
 
 	SDL_GL_SetSwapInterval(1);
-	checkError("Init Engine");
+
+	// Hide cursor
+	SDL_ShowCursor(SDL_FALSE);
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+	
+
 
 	return true;
 }

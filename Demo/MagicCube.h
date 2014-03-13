@@ -85,6 +85,19 @@ typedef struct{
 	unsigned int VertexCount;
 }CubeShaderProgram;
 
+typedef struct{
+	GLuint Color;
+}CrossHairShaderUniforms;
+
+typedef struct{
+	GLuint ProgramId;
+	CrossHairShaderUniforms UniformLocations;
+	GLuint VAO;
+	GLuint VertexBuffer;
+	float LineSize;
+	unsigned int VertexCount;
+}CrossHairShaderProgram;
+
 class MagicCube
 {
 public:
@@ -104,6 +117,7 @@ private:
 	TessSphereShaderProgram mTessSphereProg;
 	TestProgram mTestProg;
 	CubeShaderProgram mCubeProg;
+	CrossHairShaderProgram mCrossHairProg;
 
 	GLuint mProgCubeRendering;
 	GLuint mProgSkyBox;
@@ -144,5 +158,6 @@ private:
 	void renderRayTest();
 	void renderSphere();
 	void renderSkyBox();
+	void renderCrossHair();
 };
 
