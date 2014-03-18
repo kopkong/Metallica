@@ -17,7 +17,7 @@ Camera::Camera(int WindowWidth, int WindowHeight,SDL_Window * window)
 	mSDLMainWindow     = window;
 
     mPos						 = glm::vec3(0.0f, 10.0f, -10.0f);
-    mLookDirection			 = glm::vec3(0.0f, 0.0f, 1.0f);
+    mLookDirection			 = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::normalize(mLookDirection);
     mUp           = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -103,24 +103,25 @@ void Camera::onMouseUp(SDL_MouseButtonEvent button)
 	mMousePos.y = 0;
 }
 
-void Camera::onMouseMotion(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
+void Camera::onMouseMotion(SDL_MouseMotionEvent motion)
 {
 	//if(motion.state == SDL_BUTTON_RMASK)
 	{
-		if(mMousePos.x == 0 && mMousePos.y == 0)
-		{
-			mMousePos.x = button.x;
-			mMousePos.y = button.y;
-		}
+		mHorizontalAngle +=  MouseSpeed * float(-motion.xrel);
+		mVerticalAngle +=  MouseSpeed * float(-motion.yrel);
 
-		float horizontalDistance = MouseSpeed * float(mMousePos.x - button.x);
-		float verticalDistance = MouseSpeed * float(mMousePos.y -button.y);
+		glm::vec3 adjust(
+			cos(mVerticalAngle) * sin(mHorizontalAngle),
+			sin(mVerticalAngle),
+			cos(mVerticalAngle) * cos(mHorizontalAngle)
+			);
 
-		mLookDirection += glm::vec3(horizontalDistance,verticalDistance,0);
+		//mLookDirection += normalize(adjust);
+		mLookDirection = normalize(mLookDirection) + normalize(adjust);
+
+		//SDL_Log("Camera Position is : (%f,%f,%f)",mPos.x,mPos.y,mPos.z);
+		//SDL_Log("Look Direction is : (%f,%f,%f)",mLookDirection.x,mLookDirection.y,mLookDirection.z);
 	}
-
-	mMousePos.x = button.x;
-	mMousePos.y = button.y;
 }
 
 void Camera::onMouseWheel(SDL_MouseWheelEvent wheel)

@@ -24,7 +24,7 @@ public:
     void onKeyboard(SDL_Keycode Key);
 	void onMouseDown(SDL_MouseButtonEvent button);
 	void onMouseUp(SDL_MouseButtonEvent button);
-	void onMouseMotion(SDL_MouseButtonEvent event, SDL_MouseMotionEvent motion);
+	void onMouseMotion(SDL_MouseMotionEvent motion);
 	void onMouseWheel(SDL_MouseWheelEvent wheel);
 
     const glm::vec3& getPos() const

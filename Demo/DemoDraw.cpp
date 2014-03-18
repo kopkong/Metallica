@@ -131,7 +131,7 @@ void DemoDraw::run()
 					mouseButtonDownHandler(event.button);
 					break;
 				case SDL_MOUSEMOTION:
-					mouseMotionHandler(event.button,event.motion);
+					mouseMotionHandler(event.motion);
 					break;
 				case SDL_MOUSEWHEEL:
 					mouseWheelHandler(event.wheel);
@@ -179,9 +179,9 @@ void DemoDraw::mouseButtonDownHandler(SDL_MouseButtonEvent button)
 	mMagicCube->onMouseDown(button);
 }
 
-void DemoDraw::mouseMotionHandler(SDL_MouseButtonEvent button,SDL_MouseMotionEvent motion)
+void DemoDraw::mouseMotionHandler(SDL_MouseMotionEvent motion)
 {
-	mSceneCamera->onMouseMotion(button,motion);
+	mSceneCamera->onMouseMotion(motion);
 }
 
 void DemoDraw::mouseWheelHandler(SDL_MouseWheelEvent wheel)

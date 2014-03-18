@@ -220,7 +220,7 @@ void MagicCube::init()
 void MagicCube::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
+
 	renderSkyBox();
 
 	renderRollingCube();
@@ -256,8 +256,8 @@ void MagicCube::renderSkyBox()
 	glDrawArrays(GL_TRIANGLES,0,mCubeProg.VertexCount);
 
 	glDisableVertexAttribArray(0);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP,0);
-	//glUseProgram(0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,0);
+	glUseProgram(0);
 
 	checkError("skybox render");
 }
@@ -299,11 +299,12 @@ void MagicCube::renderRollingCube()
 			glBindTexture(GL_TEXTURE_2D,mCubeProg.TextureMetal);
 
 		glUniform1i(mCubeProg.UniformLocations.Texture,0);
-
 		glDrawArrays(GL_TRIANGLES,0,mCubeProg.VertexCount);
+		glBindTexture(GL_TEXTURE_2D,0);
 	}
 
 	glDisable(GL_DEPTH_TEST);
+
 	// Disable attrib pointer
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -509,7 +510,7 @@ void MagicCube::generateCube()
 
 void MagicCube::initializeCamera()
 {
-	glm::vec3 cameraPos = glm::vec3(CUBEMARGIN * CUBEXROWS / 2,CUBEMARGIN * CUBEYROWS / 2, -30);
+	glm::vec3 cameraPos = glm::vec3(CUBEMARGIN * CUBEXROWS / 2,CUBEMARGIN * CUBEYROWS / 2, 30);
 
 	mCamera->setCameraPosition(cameraPos);
 }
